@@ -1,0 +1,204 @@
+package testCases;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.Duration;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.SkipException;
+import org.testng.annotations.Test;
+
+import Utilities.DataProviders;
+import pageObjects.InClaimsMaintenancePage;
+import pageObjects.InHomePage;
+import testBase.testBaseClass;
+
+public class TC03_CopyProviderCode extends testBaseClass {
+	
+
+    @Test(dataProvider = "providerData", dataProviderClass = DataProviders.class, groups = {"datadriven"})
+    public void verify_copy_provider(String username, String password, String firstname, String lastname, String phonenumber,
+                                     String licencenumber, String licensexp, String emailaddress, String manager, String roleofuser) {
+
+        logger.info(" **Copy Provider Code Test Started! **");      
+        
+        try {
+            // Logging input data for visibility
+            logger.info("User Data: " + String.format("Username: %s, Password: %s, FirstName: %s, LastName: %s", username, password, firstname, lastname));
+
+            // Check for null data in provider fields
+            if (username == null || password == null || firstname == null || lastname == null ||
+                phonenumber == null || licencenumber == null || licensexp == null ||
+                emailaddress == null || manager == null || roleofuser == null) {
+
+                logger.error("Missing required data. Skipping test.");
+                throw new SkipException("Skipping test due to missing required data.");
+            }
+
+            // Home Page - Log in
+            InHomePage hp = new InHomePage(driver);
+            logger.info("Entering login credentials for user: " + username);
+            hp.setUsername(username);
+            hp.setPassword(password);
+            hp.clickSignIn();
+
+            // Navigate to Claims Maintenance Page
+            logger.info("Navigating to Claims Maintenance page...");
+            InClaimsMaintenancePage cmp = new InClaimsMaintenancePage(driver);
+            cmp.clickClaimsMenu();
+            cmp.clickClaimMaintenance();
+            cmp.clickProvider();
+
+            // Search for Provider and Copy
+            cmp.selectSearchbyList();
+            cmp.setSearchText("CA0TYNA");
+            cmp.clickSearchBtn();
+
+            // Explicit wait for provider list to appear
+            
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+            wait.until(ExpectedConditions.elementToBeClickable(cmp.getProviderListElement()));            
+            cmp.clickProviderListText();
+            cmp.clickCopyBtn();
+            
+            // Wait for the page to load after clicking copy
+            wait.until(ExpectedConditions.visibilityOf(cmp.getProviderFormElement()));
+            
+            String fullName = String.join(" ", firstname, lastname);
+            logger.info("Filling provider information for: " + fullName);
+
+            cmp.setBusinessName(fullName);
+            cmp.setName(fullName);
+            cmp.setDBAName(fullName);
+            cmp.setProviderPrimaryPhoneNumber(phonenumber);
+            cmp.setProviderFaxNumber(phonenumber);
+            cmp.setProviderEmailAddress(emailaddress);
+            cmp.setProviderAccounBusinessName(fullName);
+            cmp.setProviderAccounBusinessName2(fullName);
+
+            // Generate provider number
+  
+            String ProviderCode = generateProviderNumber("CA0", 4);
+            logger.info("Generated Provider Code: " + ProviderCode);
+            cmp.setProviderNumber(ProviderCode);
+            cmp.clickSaveBtn();
+            
+          	
+            // Wait for save confirmation
+            wait.until(ExpectedConditions.textToBePresentInElement(cmp.getSaveConfirmationElement(), ProviderCode));
+
+            // Validate that the correct provider code was saved
+            String capturedProviderCode = cmp.getProviderCode();
+            Assert.assertEquals(capturedProviderCode, ProviderCode, "Provider Code mismatch after saving.");
+            logger.info("Provider code successfully added and verified: " + capturedProviderCode);         
+            
+            // Log out
+            cmp.SignOutInsuranceNow();
+            logger.info("Provider code test completed successfully and user signed out.");  
+            
+          
+            // Write the generated provider code to the Excel sheet     
+            writeResultsToExcel( username,  password,  firstname,  lastname,  phonenumber,
+                    licencenumber,  licensexp,  emailaddress,  manager,  roleofuser, capturedProviderCode);
+            
+            
+//    		String excelPath = "C:\\Users\\SRajendran\\InsuranceNow_v1.0\\InsuranceNow_v1.0\\testData\\providerData_Results.xlsx"; // Specify your Excel file path to write provider code
+//    		ExcelUtility excelUtils = new ExcelUtility(excelPath);
+//    		//int providerCodeColumn = 10;             
+//            ExcelUtility excelUtils = new ExcelUtility(capturedProviderCode);   		
+//    		int rowNum = excelUtils.getNextEmptyCellInColumn("Sheet1", 11); // Get next available row
+//            excelUtils.writeCellData("Sheet1", rowNum, providerCodeColumn, capturedProviderCode);
+            
+            logger.info("Written provider code to Excel: " + capturedProviderCode);
+
+                    
+        } catch (SkipException e) {
+            logger.warn("Test Skipped: " + e.getMessage());
+            throw e;  // Re-throw to ensure it's logged as skipped in reports
+
+        } catch (Exception e) {
+            logger.error("Exception occurred: " + e.getMessage(), e);
+            Assert.fail("Test failed due to an exception: " + e.getMessage());
+
+        } finally {
+            logger.info(" **Add New Provider Number Test Completed! **");
+        }
+    }
+
+	private void writeResultsToExcel(String username, String password, String firstname, String lastname,
+			String phonenumber, String licencenumber, String licensexp, String emailaddress, String manager,
+			String roleofuser, String capturedProviderCode) throws FileNotFoundException, IOException {
+
+			final String RESULTS_FOLDER = "DataDrivenResults";
+			final String RESULTS_FILE = RESULTS_FOLDER + "/TestResults.xlsx";
+			
+			// Ensure the results folder exists
+	        File resultsDir = new File(RESULTS_FOLDER);
+	        if (!resultsDir.exists()) {
+	            resultsDir.mkdirs();
+	        }
+
+	        Workbook workbook;
+	        Sheet sheet;
+
+	        // Check if the file exists to either create a new workbook or update the existing one
+	        File file = new File(RESULTS_FILE);
+	        
+	        if (file.exists()) {
+	            workbook = WorkbookFactory.create(file);
+	            sheet = workbook.getSheetAt(0);
+	        } else {
+	            workbook = new XSSFWorkbook();
+	            sheet = workbook.createSheet("Test Results");
+	            // Create the header row
+	            Row headerRow = sheet.createRow(0);
+	            headerRow.createCell(0).setCellValue("Username");
+	            headerRow.createCell(1).setCellValue("Password");
+	            headerRow.createCell(2).setCellValue("First Name");
+	            headerRow.createCell(3).setCellValue("Last Name");
+	            headerRow.createCell(4).setCellValue("Phone Number");
+	            headerRow.createCell(5).setCellValue("License #");
+	            headerRow.createCell(6).setCellValue("License Expiration Date");
+	            headerRow.createCell(7).setCellValue("Email Address");
+	            headerRow.createCell(8).setCellValue("Manager");
+	            headerRow.createCell(9).setCellValue("Role");
+	            headerRow.createCell(10).setCellValue("Producer Code");
+
+	        }
+
+		        // Write data to the next available row
+		        int rowCount = sheet.getLastRowNum();
+		        Row row = sheet.createRow(rowCount + 1);	
+		        row.createCell(0).setCellValue(username);
+		        row.createCell(1).setCellValue(password);
+		        row.createCell(2).setCellValue(firstname);
+		        row.createCell(3).setCellValue(lastname);
+		        row.createCell(4).setCellValue(phonenumber);
+		        row.createCell(5).setCellValue(licencenumber);
+		        row.createCell(6).setCellValue(licensexp);
+		        row.createCell(7).setCellValue(emailaddress);
+		        row.createCell(8).setCellValue(manager);
+		        row.createCell(9).setCellValue(roleofuser);
+		        row.createCell(10).setCellValue(capturedProviderCode);
+	       
+
+	        // Write the results back to the file
+	        try (FileOutputStream fos = new FileOutputStream(RESULTS_FILE)) {
+	            workbook.write(fos);
+	        }
+	        workbook.close();
+	    }
+		
+	
+
+
+}

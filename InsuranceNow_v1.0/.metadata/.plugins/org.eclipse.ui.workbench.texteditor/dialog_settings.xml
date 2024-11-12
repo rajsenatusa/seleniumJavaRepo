@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="966"/>
+		<item key="DIALOG_Y_ORIGIN" value="534"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="licenseChangeLink"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="licenseChangeLink"/>
+			<item value="NewProvider"/>
+			<item value="save"/>
+			<item value="commons"/>
+			<item value="ProviderSummary_ProviderNumber"/>
+			<item value="provider"/>
+			<item value="Set"/>
+			<item value="setCellData"/>
+		</list>
+		<list key="replacehistory">
+		</list>
+	</section>
+</section>
