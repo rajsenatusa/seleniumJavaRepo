@@ -523,3 +523,20 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.egit.ui 4 0 2024-11-12 18:56:48.710
 !MESSAGE Can't connect to any repository: 
+
+!ENTRY org.eclipse.egit.core 4 0 2024-11-12 19:00:40.936
+!MESSAGE An exception occurred during push on URI https://github.com/rajsenatusa/seleniumJavaRepo.git: https://github.com/rajsenatusa/seleniumJavaRepo.git: git-receive-pack not permitted on 'https://github.com/rajsenatusa/seleniumJavaRepo.git/'
+!STACK 0
+org.eclipse.jgit.errors.TransportException: https://github.com/rajsenatusa/seleniumJavaRepo.git: git-receive-pack not permitted on 'https://github.com/rajsenatusa/seleniumJavaRepo.git/'
+	at org.eclipse.jgit.transport.TransportHttp.connect(TransportHttp.java:701)
+	at org.eclipse.jgit.transport.TransportHttp.connect(TransportHttp.java:636)
+	at org.eclipse.jgit.transport.TransportHttp.openPush(TransportHttp.java:540)
+	at org.eclipse.jgit.transport.PushProcess.execute(PushProcess.java:140)
+	at org.eclipse.jgit.transport.Transport.push(Transport.java:1533)
+	at org.eclipse.egit.core.op.PushOperation.run(PushOperation.java:269)
+	at org.eclipse.egit.ui.internal.push.PushJob.performJob(PushJob.java:86)
+	at org.eclipse.egit.ui.internal.jobs.RepositoryJob.run(RepositoryJob.java:59)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.egit.ui 4 0 2024-11-12 19:00:40.937
+!MESSAGE Can't connect to any repository: https://github.com/rajsenatusa/seleniumJavaRepo.git (https://github.com/rajsenatusa/seleniumJavaRepo.git: git-receive-pack not permitted on 'https://github.com/rajsenatusa/seleniumJavaRepo.git/')
