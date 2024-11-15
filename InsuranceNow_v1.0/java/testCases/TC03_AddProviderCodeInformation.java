@@ -21,11 +21,12 @@ import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 import Utilities.DataProviders;
+import freemarker.template.utility.DateUtil;
 import pageObjects.InClaimsMaintenancePage;
 import pageObjects.InHomePage;
 import testBase.testBaseClass;
 
-public class TC03_UpdateProviderCodeInformation extends testBaseClass {
+public class TC03_AddProviderCodeInformation extends testBaseClass {
 	
 
     @Test(dataProvider = "providerData", dataProviderClass = DataProviders.class, groups = {"datadriven"})
@@ -35,6 +36,7 @@ public class TC03_UpdateProviderCodeInformation extends testBaseClass {
         logger.info(" **Copy Provider Code Test Started! **");      
         
         try {
+        	
             // Logging input data for visibility
             logger.info("User Data: " + String.format("Username: %s, Password: %s, FirstName: %s, LastName: %s", username, password, firstname, lastname));
 
@@ -49,42 +51,56 @@ public class TC03_UpdateProviderCodeInformation extends testBaseClass {
 
             // Home Page - Log in
             InHomePage hp = new InHomePage(driver);
-            logger.info("Entering login credentials for user: " + username);
-            hp.setUsername(username);
-            hp.setPassword(password);
-            hp.clickSignIn();
+            logger.info("Entering login credentials for user: " + username );
+            hp.loginInsuranceNow(username, password);
+
 
             // Navigate to Claims Maintenance Page
             logger.info("Navigating to Claims Maintenance page...");
             InClaimsMaintenancePage cmp = new InClaimsMaintenancePage(driver);
-            cmp.clickClaimsMenu();
-            cmp.clickClaimMaintenance();
-            cmp.clickProvider();
-
-            // Search for Provider and Copy
-            cmp.selectSearchbyList();
-            cmp.setSearchText("CA0TYNA");
-            cmp.clickSearchBtn();  
-            cmp.clickProviderCodeByText("CA0TYNA");
-            cmp.clickCopyBtn();
-            String fullName = cmp.generateFullName(firstname, lastname);
-            cmp.setBusinessName(fullName);
-            cmp.setName(fullName);
-            cmp.setDBAName(fullName);
-            cmp.setProviderPrimaryPhoneNumber(phonenumber);
-            cmp.setProviderFaxNumber(phonenumber);
-            cmp.setProviderEmailAddress(emailaddress);
-            cmp.setProviderAccounBusinessName(fullName);
-            cmp.setProviderAccounBusinessName2(fullName);
-
+            cmp.navigateToNewProviderPage();
+            
             // Generate provider number
-  
+            
             String ProviderCode = generateProviderNumber("CA0", 4);
             logger.info("Generated Provider Code: " + ProviderCode);
             cmp.setProviderNumber(ProviderCode);
+            
+            cmp.selectProviderType("Adjuster");
+            String currentDate = getCurrentDate("MM/dd/yyyy");
+            cmp.setProviderStatusDate(currentDate);
+                        
+            cmp.selectStatus("Active");
+            cmp.selectBusinessType("Individual");   
+            cmp.selectAllowCombinedPayment("Yes");
+            String fullName = generateFullName(firstname, lastname);
+            cmp.setBusinessName(fullName);
+            cmp.setName(fullName);    
+            cmp.setDBAName(fullName);
+            cmp.setStreeAddress("5424 Bay Center Dr", "Tampa", "FL", "33609");
+            cmp.setPrimaryPhoneNumber("Mobile", phonenumber);
+            cmp.setSecondaryPhoneNumber("Mobile", phonenumber);
+            cmp.clickCopyBillingAddress();
+            cmp.select1099Required("Yes");
+            cmp.selectTaxIDType("SSN");
             cmp.clickSaveBtn();
             
-          	
+//            Search for Provider and Copy
+//            cmp.selectSearchbyList();
+//            cmp.setSearchText("CA0TYNA");
+//            cmp.clickSearchBtn();  
+//  	      cmp.clickProviderCodeByText("CA0TYNA");
+//	          cmp.clickCopyBtn();
+//            
+//            cmp.setBusinessName(fullName);
+//            cmp.setName(fullName);
+//            cmp.setDBAName(fullName);
+//            cmp.setProviderPrimaryPhoneNumber(phonenumber);
+//            cmp.setProviderFaxNumber(phonenumber);
+//            cmp.setProviderEmailAddress(emailaddress);
+//            cmp.setProviderAccounBusinessName(fullName);
+//            cmp.setProviderAccounBusinessName2(fullName);
+       	
             // Wait for save confirmation
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Adjust timeout as needed
             wait.until(ExpectedConditions.textToBePresentInElement(cmp.getSaveConfirmationElement(), ProviderCode));
@@ -101,16 +117,16 @@ public class TC03_UpdateProviderCodeInformation extends testBaseClass {
             cmp.enterLicenseNumber(licensenumber);
             
             if (licensexp == null || licensexp.trim().isEmpty()) {
-            	LocalDate defaultDate = LocalDate.of(9999, 12, 12);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                String expirationDateStr = defaultDate.format(formatter);
-                cmp.enterLicensexpirationDate(expirationDateStr);
+            	
+            	String defaultExpirationDate = "12/30/9999"; 
+            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            	LocalDate date = LocalDate.parse(defaultExpirationDate, formatter);
+            	cmp.enterLicensexpirationDate (date.format(formatter));
+            	
             
             } else {
-            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                LocalDate expirationDate = LocalDate.parse(licensexp, formatter);
-                String expirationDateStr = expirationDate.format(formatter);
-                cmp.enterLicensexpirationDate(expirationDateStr);
+            	            	
+            	cmp.enterLicensexpirationDate (licensexp);
             }
             
             cmp.selectLicenseStatus("VALID");
@@ -146,6 +162,8 @@ public class TC03_UpdateProviderCodeInformation extends testBaseClass {
             logger.info(" **Add New Provider Number Test Completed! **");
         }
     }
+    
+    
 
 	private void writeResultsToExcel(String username, String password, String firstname, String lastname,
 			String phonenumber, String licensenumber, String licensexp, String emailaddress, String manager,

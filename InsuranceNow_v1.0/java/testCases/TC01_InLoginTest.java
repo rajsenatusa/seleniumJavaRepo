@@ -16,9 +16,9 @@ public class TC01_InLoginTest extends testBaseClass {
 		logger.info(" **Verify Login Test Started** ");
 		
 		try {
-			// Creating instance of HomePage object
-			InHomePage hp = new InHomePage(driver);			
+			// Creating instance of HomePage object	
 			logger.info(" **Entering Login Information** ");
+			InHomePage hp = new InHomePage(driver);		
 
 			// Fetching login details from properties file
 			String username = prop.getProperty("Username");
@@ -28,9 +28,7 @@ public class TC01_InLoginTest extends testBaseClass {
 			logger.info("Username used for login: " + username);
 
 			// Performing login actions
-			hp.setUsername(username);
-			hp.setPassword(password);
-			hp.clickSignIn();
+			hp.loginInsuranceNow(username, password);
 			
 			logger.info(" **Login Attempt Made** ");
 			

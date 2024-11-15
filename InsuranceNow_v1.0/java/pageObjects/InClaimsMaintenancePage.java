@@ -22,10 +22,10 @@ public InClaimsMaintenancePage(WebDriver driver) {
 //write code for elements that we are going to interact
 
 	@FindBy (xpath ="//li[@id='Menu_Claims']")
-	WebElement linkClaims;
+	WebElement menuClaims;
 	
 	@FindBy (xpath = "//a[@id='Menu_Claims_ClaimMaintenance']")
-	WebElement linkClaimMaintenance;
+	WebElement menuOptionCliamMaintenance;
 	
 	@FindBy (xpath = "//a[contains(text(),'Provider')]")
 	WebElement linkProvider;
@@ -33,6 +33,63 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath= "//span[contains(text(),'New Provider')]")
 	WebElement linkNewProvider;
 	
+	@FindBy (xpath = "//select[@id='Provider.StatusCd']")
+	WebElement selectProviderStatus;
+	
+	@FindBy (xpath = "//select[@id='ProviderTaxInfo.LegalEntityCd']")
+	WebElement selectBusinessType;
+	
+	@FindBy (xpath = "//select[@id='Provider.CombinePaymentInd']")
+	WebElement selectAllowedCombinedPayment;
+		
+	@FindBy (xpath ="//input[@id='Provider.StatusDt']")
+	WebElement txtProviderStatusDate;
+	
+	@FindBy(xpath = "//input[@id='ProviderName.CommercialName']")
+	WebElement txtBusinessName;
+
+	@FindBy(xpath = "//input[@id='ProviderName.GivenName']")
+	WebElement txtName;
+	
+	@FindBy(xpath = "//input[@id='ProviderName.DBAName']")
+	WebElement txtDBAName;
+		
+	@FindBy(xpath = "//input[@id='ProviderStreetAddr.Addr1']")
+	WebElement txtStreetAddr;
+	
+	@FindBy (xpath = "//input[@id='ProviderStreetAddr.City']")
+	WebElement txtCity;
+	
+	@FindBy (xpath = "//select[@id='ProviderStreetAddr.StateProvCd']")
+	WebElement selectState;
+	
+	@FindBy (xpath = "//input[@id='ProviderStreetAddr.PostalCode']")
+	WebElement txtZipCode;
+
+	@FindBy (xpath = "//select[@id='Provider.ProviderTypeCd']")
+	WebElement selectProviderType;
+	
+	@FindBy (xpath = "//a[@id='CopyBillingAddress']")
+	WebElement btnCopyBillingAddress;
+		
+	@FindBy (xpath = "//a[@id='CopyAddress']")
+	WebElement btnSearchDBACopyAddress;
+	
+	@FindBy (xpath = "//select[@id='ProviderTaxInfo.Required1099Ind']")
+	WebElement select1099Ind;
+	
+	@FindBy (xpath = "//select[@id='ProviderTaxInfo.TaxIdTypeCd']")
+	WebElement selectTaxIDtype;
+	
+	@FindBy (xpath = "//select[@id='ProviderPrimaryPhone.PhoneName']")
+	WebElement selectprimaryPhoneType;
+	
+	@FindBy (xpath = "//input[@id='ProviderPrimaryPhone.PhoneNumber']")
+	WebElement txtprimaryPhoneNumber;
+	
+	@FindBy (xpath = "//select[@id='Provider.PaymentPreferenceCd']")
+	WebElement selectpaymentPreference;
+		
 	@FindBy (xpath = "//select[@id='SearchBy']")
 	WebElement listboxSearchBy;
 	
@@ -51,20 +108,22 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy(xpath = "//input[@id='Provider.ProviderNumber']")
 	WebElement txtProviderCode;
 	
-	@FindBy(xpath = "//input[@id='ProviderName.CommercialName']")
-	WebElement txtProviderCommercialName;
-	
-	@FindBy(xpath = "//input[@id='ProviderName.GivenName']")
-	WebElement txtProviderName;
-	
-	@FindBy(xpath = "//input[@id='ProviderName.DBAName']")
-	WebElement txtDBAName;
-	
+
 	@FindBy(xpath = "//input[@id='ProviderStreetAddr.Addr1']")
 	WebElement txtProviderAddress;
 	
+	@FindBy (xpath = "//select[@id='ProviderPrimaryPhone.PhoneName']")
+	WebElement selectPrimaryPhoneName;
+	
 	@FindBy(xpath = "//input[@id='ProviderPrimaryPhone.PhoneNumber']")
-	WebElement txtProviderPrimaryPhoneNumber;
+	WebElement txtPrimaryPhoneNumber;
+
+	@FindBy (xpath = "//select[@id='ProviderSecondaryPhone.PhoneName']")
+	WebElement selectSecondaryPhoneName;
+	
+	@FindBy(xpath = "//input[@id='ProviderSecondaryPhone.PhoneNumber']")
+	WebElement txtSecondaryPhoneNumber;
+
 	
 	@FindBy(xpath = "//input[@id='ProviderFax.PhoneNumber']")
 	WebElement txtProviderFaxNumber;
@@ -115,30 +174,174 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	WebElement licenseStatus; 
 	
 	
-		
-		
-	
 	// In this section, write only action methods for your test cases.
-
-	public void clickClaimsMenu () {
-		
-		linkClaims.click();
-	}
 	
-	public void clickClaimMaintenance () {
+	public void navigateToNewProviderPage() {
 		
-		linkClaimMaintenance.click();
-	}
-	
-	public void clickProvider () {
-		
+		menuClaims.click();
+		menuOptionCliamMaintenance.click();
 		linkProvider.click();
-	}
-	
-	
-	public void clickNewProvider() {
 		linkNewProvider.click();
+		
 	}
+	
+	public void setProviderNumber(String providerNumber) {
+		txtProviderCode.clear();
+		txtProviderCode.sendKeys(providerNumber);
+		
+	}
+	
+	public void selectProviderType (String providerType) {
+		
+		Select ProviderType = new Select (selectProviderType);
+		ProviderType.selectByValue(providerType);
+				
+	}
+		
+	public void selectStatus(String providerStatus) {
+		
+		Select Status = new Select(selectProviderStatus);
+		Status.selectByValue(providerStatus);		
+		
+	}
+	
+	public void selectBusinessType(String businessType) {
+		
+		Select dropdown = new Select(selectBusinessType);
+		dropdown.selectByValue(businessType);
+		
+	}
+	
+	public void setProviderStatusDate(String currentDate) {
+		txtProviderStatusDate.clear();
+		txtProviderStatusDate.sendKeys(currentDate);
+		
+	}
+	
+
+	public void selectAllowCombinedPayment(String combinedPayment) {
+		Select dropdown = new Select(selectAllowedCombinedPayment);
+		dropdown.selectByValue(combinedPayment);
+		
+	}
+	
+	public void setBusinessName(String name) {
+		txtBusinessName.clear();
+		txtBusinessName.sendKeys(name);
+		
+	}
+	
+	public void setName(String fullName) {
+		txtName.clear();
+		txtName.sendKeys(fullName);
+		
+	}
+	
+	public void setDBAName(String dbaname) {
+		txtDBAName.clear();
+		txtDBAName.sendKeys(dbaname);
+		
+	}
+	
+	public void setStreeAddress(String address1,  String City, String State, String Zip ) {
+		
+		txtStreetAddr.clear();
+		txtStreetAddr.sendKeys(address1);
+		
+		txtCity.clear();
+		txtCity.sendKeys(City);
+		
+		Select state = new Select (selectState);
+		state.selectByValue(State);
+		
+		txtZipCode.clear();
+		txtZipCode.sendKeys(Zip);
+		
+		btnSearchDBACopyAddress.click();
+				
+		
+	}
+	
+	public void setPrimaryPhoneNumber(String string, String phonenumber) {
+		
+		Select dropdown = new Select (selectPrimaryPhoneName);
+		dropdown.selectByValue(string);
+		
+		txtPrimaryPhoneNumber.clear();
+		txtPrimaryPhoneNumber.sendKeys(phonenumber);
+		
+	}
+	
+	public void setSecondaryPhoneNumber(String string, String phonenumber) {
+
+		Select dropdown = new Select (selectSecondaryPhoneName);
+		dropdown.selectByValue(string);
+		
+		txtPrimaryPhoneNumber.clear();
+		txtPrimaryPhoneNumber.sendKeys(phonenumber);
+	}
+
+	public void clickCopyBillingAddress() {
+		
+		btnCopyBillingAddress.click();
+		
+	}
+
+	public void select1099Required(String string) {
+		Select dropdown = new Select (select1099Ind);
+		dropdown.selectByValue(string);
+		
+	}
+	
+	public void selectTaxIDType(String taxidtype) {
+		
+		Select dropdown = new Select (selectTaxIDtype);
+		dropdown.selectByValue(taxidtype);
+		
+	}
+	
+	public WebElement getSaveConfirmationElement() {
+
+		return lblProviderCode;
+	}
+
+	public String getProviderCode() {
+		
+		try {			
+			return (lblProviderCode.getText()) ;			
+		}		
+		catch (Exception e) 
+		{			
+			return (e.getMessage());
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public void selectSearchbyList () {
 		
@@ -166,30 +369,8 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 		clickCopyBtn.click();
 	}
-
-	public void setBusinessName(String businessname) {
-		txtProviderCommercialName.clear();
-		txtProviderCommercialName.sendKeys(businessname);
-		
-	}
-
-	public void setName(String name) {
-		txtProviderName.clear();
-		txtProviderName.sendKeys(name);
-		
-	}
-
-	public void setDBAName(String dbaname) {
-		txtDBAName.clear();
-		txtDBAName.sendKeys(dbaname);
-		
-	}
 	
-	public void setProviderPrimaryPhoneNumber(String primaryname) {
-		txtProviderPrimaryPhoneNumber.clear();
-		txtProviderPrimaryPhoneNumber.sendKeys(primaryname);
-		
-	}
+
 	
 	public void setProviderFaxNumber(String providerfax) {
 		txtProviderFaxNumber.clear();
@@ -216,28 +397,11 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 	}
 	
-	public void setProviderNumber(String providerNumber) {
-		txtProviderCode.clear();
-		txtProviderCode.sendKeys(providerNumber);
-		
-	}
-	
+
 	
 	public void clickSaveBtn () {
 		
 		btnSave.click();
-	}
-
-
-	public String getProviderCode() {
-	
-		try {			
-			return (lblProviderCode.getText()) ;			
-		}		
-		catch (Exception e) 
-		{			
-			return (e.getMessage());
-		}
 	}
 
 
@@ -258,10 +422,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		return txtProviderCommercialName;
 	}
 
-	public WebElement getSaveConfirmationElement() {
 
-		return lblProviderCode;
-	}
 
 	public String getErrorMessage() {
 		
@@ -292,6 +453,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	}
 
 	public void enterLicensexpirationDate(String licensexp) {
+		txtlicensexpirationDate.click();
 		txtlicensexpirationDate.clear();
 		txtlicensexpirationDate.sendKeys(licensexp);
 		
@@ -307,6 +469,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		licenseChangeLink.click();
 		
 	}
+	
 
 	public void clickProviderCodeByText(String providerCodeTxt) {
 		// Dynamically build the XPath using the provider text
@@ -323,10 +486,13 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	}
 
 
-	public String generateFullName(String firstname, String lastname) {
-		String fullName = String.join(" ", firstname, lastname);
-		return fullName;
-	}
-		
+
+
+
+
+
+
+
+
 
 }

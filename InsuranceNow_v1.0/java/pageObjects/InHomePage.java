@@ -37,22 +37,14 @@ public class InHomePage extends basePage {
 	
 	// In this section, write here write methods to perform actions.
 	
-	
-	public void setUsername (String username) {
-		
-		txtUsername.sendKeys(username);;
-	}
-	
-	public void setPassword (String password) {
-		
-		txtPassword.sendKeys(password);;
-	}
-		
-	public void clickSignIn () {
-		
+	public void loginInsuranceNow(String username, String password) {
+		// This action method login's to insurance now.
+		txtUsername.click();
+		txtUsername.sendKeys(username);
+		txtPassword.sendKeys(password);
 		btnSignIn.click();
 	}
-
+	
 	// In this section, write methods used for test validations 
 	// given method used to return the text of the Sign out Object.
 	

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
@@ -145,9 +147,8 @@ public class testBaseClass {
 		
 	}
 	
-	
-	
-	// add all reusable method here.
+		
+	// add all reusable methods goes here!!
 		
     public static String generateProviderNumber(String prefix, int length) {
         StringBuilder providerCode = new StringBuilder(prefix);
@@ -163,10 +164,34 @@ public class testBaseClass {
         return providerCode.toString();
     }
     
-    
-    
+	
+    /**
+     * Gets the current date in the specified format.
+     *
+     * @param format The date format as a string (e.g., "MM/dd/yyyy").
+     * @return The current date as a formatted string.
+     */
+    public String getCurrentDate(String format) {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return currentDate.format(formatter);
+    }
 
+    /**
+     * Generates the fullname from the given first name and Last name.
+     *
+     * @param first and lastname passed
+     * @return retusns full name with space in between first and last name.
+     */
+	
+	public String generateFullName(String firstname, String lastname) {
+		String fullName = String.join(" ", firstname, lastname);
+		return fullName;
+	}
+
+        
     // this method capture screen shot of the failure 
+    
 	public String captureScreen(String tname) throws IOException {
 
 			String timeStamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
@@ -182,6 +207,8 @@ public class testBaseClass {
 			return targetFilePath;
 
 		}
+	
+
 
 	
 
