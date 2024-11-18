@@ -20,10 +20,7 @@ public class TC02_InLoginTest_DDT extends testBaseClass {
             InHomePage hp = new InHomePage(driver);
 
             // Enter login credentials
-            hp.setUsername(username);
-            hp.setPassword(password);
-            hp.clickSignIn();
-
+            hp.loginInsuranceNow(username, password);
             // Check for invalid login
             if (result.equalsIgnoreCase("invalid")) {
                 String errorMsg = hp.getHomePageErrorText();

@@ -417,10 +417,6 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		return clickProviderListText;
 	}
 	
-	public WebElement getProviderFormElement() {
-
-		return txtProviderCommercialName;
-	}
 
 
 

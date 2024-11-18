@@ -84,23 +84,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.select1099Required("Yes");
             cmp.selectTaxIDType("SSN");
             cmp.clickSaveBtn();
-            
-//            Search for Provider and Copy
-//            cmp.selectSearchbyList();
-//            cmp.setSearchText("CA0TYNA");
-//            cmp.clickSearchBtn();  
-//  	      cmp.clickProviderCodeByText("CA0TYNA");
-//	          cmp.clickCopyBtn();
-//            
-//            cmp.setBusinessName(fullName);
-//            cmp.setName(fullName);
-//            cmp.setDBAName(fullName);
-//            cmp.setProviderPrimaryPhoneNumber(phonenumber);
-//            cmp.setProviderFaxNumber(phonenumber);
-//            cmp.setProviderEmailAddress(emailaddress);
-//            cmp.setProviderAccounBusinessName(fullName);
-//            cmp.setProviderAccounBusinessName2(fullName);
-       	
+
             // Wait for save confirmation
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Adjust timeout as needed
             wait.until(ExpectedConditions.textToBePresentInElement(cmp.getSaveConfirmationElement(), ProviderCode));
@@ -132,9 +116,6 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.selectLicenseStatus("VALID");
             cmp.clickSaveBtn();
          
-            // Wait for the page to load after clicking copy
-            wait.until(ExpectedConditions.visibilityOf(cmp.getProviderFormElement()));
-                       
             
             // Log out
             cmp.SignOutInsuranceNow();
