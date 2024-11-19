@@ -361,6 +361,9 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	
 	public void setNewTerrirotyLocationDetails(String state, String type, String description) {
 		
+		//*[@id="NewTerritoryLocation"]
+		btnNewTerritoryLocation.click();
+		
 		Select stateDropdown = new Select (selectTerritoryState);
 		stateDropdown.selectByValue(state);
 		
@@ -373,8 +376,8 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	}
 
 	public void setLicenseDetails(String LicState, String licType, String licensenumber, String licensexp, String liceStatus) {
-		
-		
+
+		linkNewLicense.click();
 		Select licStateDropdown = new Select (selectProviderLicState);
 		licStateDropdown.selectByValue(LicState);
 		

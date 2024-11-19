@@ -39,6 +39,7 @@ public class testBaseClass {
 	public Logger logger;
 	public Properties prop;
 		
+	@SuppressWarnings("deprecation")
 	@BeforeClass (groups = {"master", "regression", "sanity", "datadriven"})
 	@Parameters({"os","browser"})
 	
