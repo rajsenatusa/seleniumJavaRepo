@@ -1,14 +1,9 @@
 package pageObjects;
 
-import java.time.Duration;
-
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class InClaimsMaintenancePage extends basePage {
 	
@@ -81,6 +76,12 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath = "//select[@id='ProviderTaxInfo.TaxIdTypeCd']")
 	WebElement selectTaxIDtype;
 	
+	@FindBy (xpath = "//*[@id=\"TaxId\"]")
+	WebElement txtTaxId;
+		
+	@FindBy (xpath = "//*[@id=\"Save\"]/i")
+	WebElement btnProviderDetailSave;
+	
 	@FindBy (xpath = "//select[@id='ProviderPrimaryPhone.PhoneName']")
 	WebElement selectprimaryPhoneType;
 	
@@ -121,6 +122,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath ="//*[@id=\"Save\"]/span")
 	WebElement btnLicSave;
 	
+
 	
 		
 	@FindBy (xpath = "//select[@id='SearchBy']")
@@ -205,6 +207,9 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	
 	@FindBy (xpath = "//select[@id='ProviderLicense.LicenseStatusCd']")
 	WebElement licenseStatus; 
+	
+	@FindBy (xpath = "//*[@id=\"SignOutInMenu\"]")
+	WebElement linkSignOut;
 	
 	
 	// In this section, write only action methods for your test cases.
@@ -333,6 +338,12 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 	}
 	
+
+	public void setTaxID(String taxid) {
+		txtTaxId.sendKeys(taxid);
+		
+	}
+
 	
 	public void selectPaymentPreference(String paymentPreference) {
 		
@@ -340,6 +351,13 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		dropdown.selectByValue(paymentPreference);
 		
 	}
+	
+	public void clickSaveBtn() {
+		
+		btnProviderDetailSave.click();
+		
+	}
+
 	
 	public void setNewTerrirotyLocationDetails(String state, String type, String description) {
 		
@@ -379,15 +397,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 	}
 
-	public void setLicenseDetails(String string, String string2, String licensenumber, String licensexp) {
-		// TODO Auto-generated method stub
-		
-	}
 
-
-	
-	
-	
 	public WebElement getSaveConfirmationElement() {
 
 		return lblProviderCode;
@@ -403,183 +413,12 @@ public InClaimsMaintenancePage(WebDriver driver) {
 			return (e.getMessage());
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public void selectSearchbyList () {
-		
-		Select dropdown = new Select(listboxSearchBy);
-		dropdown.selectByValue("ProviderNumber");
-		
-	}
-	
-	public void setSearchText (String ProviderNumber) {
-		
-		txtboxSearchText.sendKeys(ProviderNumber);
-	}
-	
-	public void clickSearchBtn () {
-		
-		btnSearch.click();
-	}
-
-	public void clickProviderListText () {
-		
-		clickProviderListText.click();
-	}
-	
-	public void clickCopyBtn () {
-		
-		clickCopyBtn.click();
-	}
-	
-
-	
-	public void setProviderFaxNumber(String providerfax) {
-		txtProviderFaxNumber.clear();
-		txtProviderFaxNumber.sendKeys(providerfax);
-		
-	}
-	
-	public void setProviderEmailAddress(String provideremail) {
-		txtProviderEmailAddress.clear();
-		txtProviderEmailAddress.sendKeys(provideremail);
-		
-	}
-	
-	public void setProviderAccounBusinessName(String provideraccName) {
-		txtProviderAccounBusinessName.clear();
-		txtProviderAccounBusinessName.sendKeys(provideraccName);
-		
-	}
-
-	
-	public void setProviderAccounBusinessName2(String provideraccName2) {
-		txtProviderAccounBusinessName2.clear();
-		txtProviderAccounBusinessName2.sendKeys(provideraccName2);
-		
-	}
-	
-
-	
-	public void clickSaveBtn () {
-		
-		btnSave.click();
-	}
-
 
 	public void SignOutInsuranceNow() {
 		
-		btntonavigateSignOut.click();
-		btnSignout.click();
-		
+		linkSignOut.click();
 	}
+
+
 	
-	public WebElement getProviderListElement() {
-
-		return clickProviderListText;
-	}
-	
-
-
-
-	public String getErrorMessage() {
-		
-		return genericErrorLbl.getText();
-	}
-	
-	public void linkNewLicense () {
-		
-		linkNewLicense.click();
-	}
-		
-	public void selectProviderState (String state) {		
-		Select dropdown = new Select(providerLicenseState);
-		dropdown.selectByValue(state);
-		
-	}
-
-	public void selectLicenseType(String LType) {
-		Select dropdown = new Select(licenseType);
-		dropdown.selectByValue(LType);
-		
-	}
-
-	public void enterLicenseNumber(String licencenumber) {
-		txtlicenseNumber.clear();;
-		txtlicenseNumber.sendKeys(licencenumber);
-		
-	}
-
-	public void enterLicensexpirationDate(String licensexp) {
-		txtlicensexpirationDate.click();
-		txtlicensexpirationDate.clear();
-		txtlicensexpirationDate.sendKeys(licensexp);
-		
-	}
-
-	public void selectLicenseStatus(String lStatus) {
-		Select dropdown = new Select(licenseStatus);
-		dropdown.selectByValue(lStatus);
-		
-	}
-
-	public void clickLicenseChangeLink() {
-		licenseChangeLink.click();
-		
-	}
-	
-
-	public void clickProviderCodeByText(String providerCodeTxt) {
-		// Dynamically build the XPath using the provider text
-        String dynamicXpath = "//a[contains(text(),'" + providerCodeTxt + "')]";
-
-        // Wait until the element is present and clickable
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Adjust timeout as needed
-        WebElement dynamicProviderLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(dynamicXpath)));
-
-        // Click the dynamically found element
-        dynamicProviderLink.click();
-        System.out.println("Successfully clicked on the provider link with text: " + providerCodeTxt);
-		
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

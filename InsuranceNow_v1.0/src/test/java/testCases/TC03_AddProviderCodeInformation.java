@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,7 +18,6 @@ import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 import Utilities.DataProviders;
-import freemarker.template.utility.DateUtil;
 import pageObjects.InClaimsMaintenancePage;
 import pageObjects.InHomePage;
 import testBase.testBaseClass;
@@ -83,6 +79,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.clickCopyBillingAddress();
             cmp.select1099Required("Yes");
             cmp.selectTaxIDType("SSN");
+            cmp.setTaxID("123456798");
             cmp.selectPaymentPreference("Check");
             cmp.clickSaveBtn();
 
@@ -110,30 +107,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             	cmp.setLicenseDetails("FL", "P&C Casualty Agent", licensenumber, "12/31/9999", "License is valid");
             	
             }
-                        
-            
-            // Search the created provider code and update the license details.            
-            cmp.clickLicenseChangeLink();
-            cmp.selectProviderState("FL");
-            cmp.selectLicenseType("PCBroker");
-            cmp.enterLicenseNumber(licensenumber);
-            
-            if (licensexp == null || licensexp.trim().isEmpty()) {
-            	
-            	String defaultExpirationDate = "12/30/9999"; 
-            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            	LocalDate date = LocalDate.parse(defaultExpirationDate, formatter);
-            	cmp.enterLicensexpirationDate (date.format(formatter));
-            	
-            
-            } else {
-            	            	
-            	cmp.enterLicensexpirationDate (licensexp);
-            }
-            
-            cmp.selectLicenseStatus("VALID");
-            cmp.clickSaveBtn();
-         
+                             
             
             // Log out
             cmp.SignOutInsuranceNow();
