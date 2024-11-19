@@ -89,6 +89,39 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	
 	@FindBy (xpath = "//select[@id='Provider.PaymentPreferenceCd']")
 	WebElement selectpaymentPreference;
+	
+	@FindBy (xpath ="//*[@id=\"ProviderTerritoryLocation.StateProvCd\"]")
+	WebElement selectTerritoryState;
+	
+	@FindBy (xpath ="//*[@id=\"ProviderTerritoryLocation.TypeCd\"]")
+	WebElement selectType;
+	
+	@FindBy (xpath = "//*[@id=\"ProviderTerritoryLocation.Description\"]")
+	WebElement txtTerritoryDescriptionDetails;
+	
+	
+	@FindBy (xpath = "//*[@id=\"NewTerritoryLocation\"]")
+	WebElement btnNewTerritoryLocation;
+	
+	@FindBy (xpath = "//*[@id=\"ProviderLicense.StateProvCd\"]")
+	WebElement selectProviderLicState;
+	
+	@FindBy(xpath = "//*[@id=\"ProviderLicense.LicenseTypeCd\"]")
+	WebElement selectProviderLicType;
+	
+	@FindBy (xpath = "//*[@id=\"ProviderLicense.LicensePermitNumber\"]")
+	WebElement txtLicenseNumber;
+	
+	@FindBy (xpath = "//*[@id=\"ProviderLicense.ExpirationDt\"]")
+	WebElement txtLicExpriationDate;
+	
+	@FindBy (xpath ="//*[@id=\"ProviderLicense.LicenseStatusCd\"]")
+	WebElement selectLicStatus;
+	
+	@FindBy (xpath ="//*[@id=\"Save\"]/span")
+	WebElement btnLicSave;
+	
+	
 		
 	@FindBy (xpath = "//select[@id='SearchBy']")
 	WebElement listboxSearchBy;
@@ -300,6 +333,61 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 	}
 	
+	
+	public void selectPaymentPreference(String paymentPreference) {
+		
+		Select dropdown = new Select (selectpaymentPreference);
+		dropdown.selectByValue(paymentPreference);
+		
+	}
+	
+	public void setNewTerrirotyLocationDetails(String state, String type, String description) {
+		
+		Select stateDropdown = new Select (selectTerritoryState);
+		stateDropdown.selectByValue(state);
+		
+		Select typeDropdown = new Select (selectType);
+		typeDropdown.selectByValue(state);
+		
+		txtTerritoryDescriptionDetails.sendKeys(description);
+			
+		
+	}
+
+	public void setLicenseDetails(String LicState, String licType, String licensenumber, String licensexp, String liceStatus) {
+		
+		
+		Select licStateDropdown = new Select (selectProviderLicState);
+		licStateDropdown.selectByValue(LicState);
+		
+		Select licTypeDropdown = new Select (selectProviderLicType);
+		licTypeDropdown.selectByValue(licType);
+		
+		txtLicenseNumber.clear();
+		txtLicenseNumber.sendKeys(licensenumber);
+		
+		txtLicExpriationDate.clear();
+		txtLicExpriationDate.sendKeys(licensexp);
+		
+		Select licStatusDropdown = new Select (selectLicStatus);
+		
+		licStatusDropdown.selectByVisibleText(liceStatus);
+		
+		btnLicSave.click();
+		
+		
+		
+	}
+
+	public void setLicenseDetails(String string, String string2, String licensenumber, String licensexp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	
+	
+	
 	public WebElement getSaveConfirmationElement() {
 
 		return lblProviderCode;
@@ -480,6 +568,9 @@ public InClaimsMaintenancePage(WebDriver driver) {
         System.out.println("Successfully clicked on the provider link with text: " + providerCodeTxt);
 		
 	}
+
+
+
 
 
 

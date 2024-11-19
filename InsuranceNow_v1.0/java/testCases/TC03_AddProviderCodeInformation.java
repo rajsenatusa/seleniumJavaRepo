@@ -83,6 +83,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.clickCopyBillingAddress();
             cmp.select1099Required("Yes");
             cmp.selectTaxIDType("SSN");
+            cmp.selectPaymentPreference("Check");
             cmp.clickSaveBtn();
 
             // Wait for save confirmation
@@ -92,7 +93,24 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             // Validate that the correct provider code was saved
             String capturedProviderCode = cmp.getProviderCode();
             Assert.assertEquals(capturedProviderCode, ProviderCode, "Provider Code mismatch after saving.");
-            logger.info("Provider code successfully added and verified: " + capturedProviderCode);        
+            logger.info("Provider code successfully added and verified: " + capturedProviderCode);      
+            
+            
+            //add new NewTerritory Location
+            
+            cmp.setNewTerrirotyLocationDetails("FL", "State", "Adding Territory Location");
+            
+            if (!licensexp.equals(currentDate) || !licensexp.isEmpty()) {
+            	
+            	
+            	cmp.setLicenseDetails("FL", "P&C Casualty Agent", licensenumber, licensexp, "License is valid");
+            	
+            }else if (licensexp.isEmpty()){
+            	
+            	cmp.setLicenseDetails("FL", "P&C Casualty Agent", licensenumber, "12/31/9999", "License is valid");
+            	
+            }
+                        
             
             // Search the created provider code and update the license details.            
             cmp.clickLicenseChangeLink();
