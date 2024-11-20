@@ -210,6 +210,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath = "//select[@id='ProviderLicense.LicenseStatusCd']")
 	WebElement licenseStatus; 
 	
+	// Signout Page Objects
 	@FindBy(xpath="//*[@id=\"UserMenu\"]/i")
 	WebElement btnUserMenu;
 	
