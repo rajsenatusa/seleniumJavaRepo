@@ -152,7 +152,7 @@ public class testBaseClass {
 	
 		
 	// add all reusable methods goes here!!
-		
+	
     public static String generateProviderNumber(String prefix, int length) {
         StringBuilder providerCode = new StringBuilder(prefix);
         Random random = new Random();
@@ -238,7 +238,6 @@ public class testBaseClass {
         // If none of the formats work, return an error or handle it
         throw new IllegalArgumentException("Invalid date format: " + inputDate);
     }
-
 	
 
 

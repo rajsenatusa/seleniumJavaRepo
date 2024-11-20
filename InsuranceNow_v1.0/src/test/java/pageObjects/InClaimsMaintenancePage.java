@@ -316,13 +316,17 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 	}
 	
-	public void setSecondaryPhoneNumber(String string, String phonenumber) {
+	public void setSecondaryPhoneNumber(String phonename, String phonenumber) {
 
 		Select dropdown = new Select (selectSecondaryPhoneName);
-		dropdown.selectByValue(phonenumber);
+		dropdown.selectByValue(phonename);
 		
 		txtPrimaryPhoneNumber.clear();
 		txtPrimaryPhoneNumber.sendKeys(phonenumber);
+		
+		txtSecondaryPhoneNumber.clear();
+		txtSecondaryPhoneNumber.sendKeys(phonenumber);
+		
 	}
 
 	public void clickCopyBillingAddress() {
