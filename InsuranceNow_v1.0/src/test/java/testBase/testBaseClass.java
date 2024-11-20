@@ -9,7 +9,10 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -207,6 +210,35 @@ public class testBaseClass {
 			return targetFilePath;
 
 		}
+	
+	// Method to convert date to MM/dd/yyyy
+    public static String convertDateToExpectedFormat(String inputDate) {
+        // List of possible input date formats
+        List<DateTimeFormatter> possibleFormats = new ArrayList<>();
+        possibleFormats.add(DateTimeFormatter.ofPattern("MM/dd/yyyy"));  // Common U.S. format
+        possibleFormats.add(DateTimeFormatter.ofPattern("M/d/yyyy"));   // Single-digit month/day
+        possibleFormats.add(DateTimeFormatter.ofPattern("MM-dd-yyyy")); // Dash-separated
+        possibleFormats.add(DateTimeFormatter.ofPattern("yyyy-MM-dd")); // ISO format
+        possibleFormats.add(DateTimeFormatter.ofPattern("M/d/yy"));     // Two-digit year
+        possibleFormats.add(DateTimeFormatter.ofPattern("MM/dd/yy"));   // Two-digit year, standard format
+
+        // Expected output format
+        DateTimeFormatter expectedFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+        // Try parsing with each format
+        for (DateTimeFormatter formatter : possibleFormats) {
+            try {
+                LocalDate parsedDate = LocalDate.parse(inputDate, formatter);
+                return parsedDate.format(expectedFormat); // Return in expected format
+            } catch (DateTimeParseException e) {
+                // Ignore and try the next format
+            }
+        }
+
+        // If none of the formats work, return an error or handle it
+        throw new IllegalArgumentException("Invalid date format: " + inputDate);
+    }
+
 	
 
 

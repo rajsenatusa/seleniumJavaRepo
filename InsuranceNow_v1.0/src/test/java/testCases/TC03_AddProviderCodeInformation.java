@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -29,7 +32,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
     public void verify_copy_provider(String username, String password, String firstname, String lastname, String phonenumber,
                                      String licensenumber, String licensexp, String emailaddress, String manager, String roleofuser) {
 
-        logger.info(" **Copy Provider Code Test Started! **");      
+        logger.info(" **Add Provider Code Test Started! **");      
         
         try {
         	
@@ -77,9 +80,9 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.setPrimaryPhoneNumber("Mobile", phonenumber);
             cmp.setSecondaryPhoneNumber("Mobile", phonenumber);
             cmp.clickCopyBillingAddress();
-            cmp.select1099Required("Yes");
+            cmp.select1099Required("No");
             cmp.selectTaxIDType("SSN");
-            cmp.setTaxID("123456798");
+            //cmp.setTaxID("123456798");
             cmp.selectPaymentPreference("Check");
             cmp.clickSaveBtn();
 
@@ -97,29 +100,40 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             
             cmp.setNewTerrirotyLocationDetails("FL", "State", "Adding Territory Location");
             
-            if (!licensexp.equals(currentDate) || !licensexp.isEmpty()) {
+            if (licensexp.isEmpty()) {
             	
+                // Case 1: License expiration date is blank, set it to "12/31/9999"
+            
+                cmp.setLicenseDetails("FL", "PCAgent", licensenumber, "12/31/9999", "License is valid");
+                
+            } else {
             	
-            	cmp.setLicenseDetails("FL", "P&C Casualty Agent", licensenumber, licensexp, "License is valid");
-            	
-            }else if (licensexp.isEmpty()){
-            	
-            	cmp.setLicenseDetails("FL", "P&C Casualty Agent", licensenumber, "12/31/9999", "License is valid");
-            	
+                // Parse the license expiration date
+            	String liceExpirationDate = convertDateToExpectedFormat(licensexp);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                LocalDate expirationDate = LocalDate.parse(liceExpirationDate, formatter);
+                LocalDate TodayDate = LocalDate.now();
+
+                if (expirationDate.isBefore(TodayDate)) {
+                    // Case 2: License expiration date is in the past
+                    cmp.setLicenseDetails("FL", "PCAgent", licensenumber, liceExpirationDate, "Not Licensed");
+                } else {
+                    // Case 3: License expiration date is in the future or today
+                    cmp.setLicenseDetails("FL", "PCAgent", licensenumber, liceExpirationDate, "License is valid");
+                }
             }
-                             
-            
-            // Log out
-            cmp.SignOutInsuranceNow();
-            logger.info("Provider code test completed successfully and user signed out.");  
-            
+                      
           
             // Write the generated provider code to the Excel sheet     
             logger.info("Provider Code details are started written in to excel sheet...");  
             writeResultsToExcel( username,  password,  firstname,  lastname,  phonenumber,
             		licensenumber,  licensexp,  emailaddress,  manager,  roleofuser, capturedProviderCode);
         
-            logger.info("Written provider code to Excel: " + capturedProviderCode);
+            logger.info("Written provider code successfully in the Excel Sheet: " + capturedProviderCode);
+            
+         // Log out
+            cmp.SignOutInsuranceNow();
+            logger.info("Provider code adding test completed successfully and user signed out.");  
             
     
                     

@@ -100,6 +100,9 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath = "//*[@id=\"ProviderTerritoryLocation.Description\"]")
 	WebElement txtTerritoryDescriptionDetails;
 	
+	@FindBy (xpath = "//*[@id=\"Save\"]/i")
+	WebElement btnTerritoryLocationSave;
+	
 	
 	@FindBy (xpath = "//*[@id=\"NewTerritoryLocation\"]")
 	WebElement btnNewTerritoryLocation;
@@ -120,10 +123,9 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	WebElement selectLicStatus;
 	
 	@FindBy (xpath ="//*[@id=\"Save\"]/span")
-	WebElement btnLicSave;
+	WebElement btnLicSave;	
 	
 
-	
 		
 	@FindBy (xpath = "//select[@id='SearchBy']")
 	WebElement listboxSearchBy;
@@ -208,8 +210,12 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	@FindBy (xpath = "//select[@id='ProviderLicense.LicenseStatusCd']")
 	WebElement licenseStatus; 
 	
+	@FindBy(xpath="//*[@id=\"UserMenu\"]/i")
+	WebElement btnUserMenu;
+	
 	@FindBy (xpath = "//*[@id=\"SignOutInMenu\"]")
 	WebElement linkSignOut;
+	
 	
 	
 	// In this section, write only action methods for your test cases.
@@ -313,7 +319,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 	public void setSecondaryPhoneNumber(String string, String phonenumber) {
 
 		Select dropdown = new Select (selectSecondaryPhoneName);
-		dropdown.selectByValue(string);
+		dropdown.selectByValue(phonenumber);
 		
 		txtPrimaryPhoneNumber.clear();
 		txtPrimaryPhoneNumber.sendKeys(phonenumber);
@@ -368,15 +374,18 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		stateDropdown.selectByValue(state);
 		
 		Select typeDropdown = new Select (selectType);
-		typeDropdown.selectByValue(state);
+		typeDropdown.selectByValue(type);
 		
 		txtTerritoryDescriptionDetails.sendKeys(description);
+		
+		btnTerritoryLocationSave.click();
 			
 		
 	}
 
-	public void setLicenseDetails(String LicState, String licType, String licensenumber, String licensexp, String liceStatus) {
-
+	public void setLicenseDetails(String LicState, String licType, String licensenumber, String licensexp, String licensStatus) {
+		
+			
 		linkNewLicense.click();
 		Select licStateDropdown = new Select (selectProviderLicState);
 		licStateDropdown.selectByValue(LicState);
@@ -392,11 +401,10 @@ public InClaimsMaintenancePage(WebDriver driver) {
 		
 		Select licStatusDropdown = new Select (selectLicStatus);
 		
-		licStatusDropdown.selectByVisibleText(liceStatus);
+		licStatusDropdown.selectByVisibleText(licensStatus);
 		
 		btnLicSave.click();
-		
-		
+
 		
 	}
 
@@ -419,6 +427,7 @@ public InClaimsMaintenancePage(WebDriver driver) {
 
 	public void SignOutInsuranceNow() {
 		
+		btnUserMenu.click();
 		linkSignOut.click();
 	}
 
