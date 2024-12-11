@@ -16,8 +16,8 @@
 		
     <classes>
 	  <!-- <class name="testCases.TC01_InLoginTest"/> 					-->
-      <!-- <class name ="testCases.TC02_InLoginTest_DDT"/> 				-->
-    	 <class name="testCases.TC03_AddProviderCodeInformation"/> 
+      	<class name ="testCases.TC02_InLoginTest_DDT"/> 				
+      <!--	<class name="testCases.TC03_AddProviderCodeInformation"/> 	-->
   	  <!-- <class name="testCases.TC04_RemoveUserTest"/>				-->
        
     </classes>
