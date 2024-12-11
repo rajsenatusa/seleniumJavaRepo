@@ -69,16 +69,16 @@ public class DataProviders {
 		int totalrows=xlutil.getRowCount("Sheet1");	
 		int totalcols=xlutil.getCellCount("Sheet1",1);
 				
-		String providerdata[][]=new String[totalrows][totalcols];//created for two dimension array which can store the data user and password
+		String deactivateuserdata[][]=new String[totalrows][totalcols];//created for two dimension array which can store the data user and password
 		
 		for(int i=1;i<=totalrows;i++)  //1   //read the data from xl storing in two deminsional array
 		{		
 			for(int j=0;j<totalcols;j++)  //0    i is rows j is col
 			{
-				providerdata[i-1][j]= xlutil.getCellData("Sheet1",i, j);  //1,0
+				deactivateuserdata[i-1][j]= xlutil.getCellData("Sheet1",i, j);  //1,0
 			}
 		}
-	return providerdata;//returning two dimension array
+	return deactivateuserdata;//returning two dimension array
 				
 	}
 	

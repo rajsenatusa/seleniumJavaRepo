@@ -17,7 +17,7 @@ public class TC02_InLoginTest_DDT extends testBaseClass {
 
         try {
             // Home Page
-            InHomePage hp = new InHomePage(driver);
+            InHomePage hp = new InHomePage(getDriver());
 
             // Enter login credentials
             hp.loginInsuranceNow(username, password);
@@ -31,7 +31,7 @@ public class TC02_InLoginTest_DDT extends testBaseClass {
 
             } else if (result.equalsIgnoreCase("valid")) {
                 // Check for valid login
-                InLoggedInPage lp = new InLoggedInPage(driver);
+                InLoggedInPage lp = new InLoggedInPage(getDriver());
 
                 boolean isCorrectPage = lp.isInsuranceNowURLExists();
                 System.out.println("Login successful, on target page: " + isCorrectPage);

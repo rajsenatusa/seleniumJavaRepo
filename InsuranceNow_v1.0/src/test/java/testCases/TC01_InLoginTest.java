@@ -18,7 +18,7 @@ public class TC01_InLoginTest extends testBaseClass {
 		try {
 			// Creating instance of HomePage object	
 			logger.info(" **Entering Login Information** ");
-			InHomePage hp = new InHomePage(driver);		
+			InHomePage hp = new InHomePage(getDriver());		
 
 			// Fetching login details from properties file
 			String username = prop.getProperty("Username");
@@ -34,7 +34,7 @@ public class TC01_InLoginTest extends testBaseClass {
 			
 			// Logged in Page
 			
-			InLoggedInPage lp = new InLoggedInPage(driver);					
+			InLoggedInPage lp = new InLoggedInPage(getDriver());					
 			// Validate login is successful by checking sign-out confirmation
 			String confirmationMsg = lp.getSignOutConfirmationMsg();
 			Assert.assertEquals(confirmationMsg, "Sign Out", "Login validation failed. Expected 'Sign Out' message not found.");

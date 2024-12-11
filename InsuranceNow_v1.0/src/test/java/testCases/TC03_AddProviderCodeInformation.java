@@ -49,14 +49,14 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             }
 
             // Home Page - Log in
-            InHomePage hp = new InHomePage(driver);
+            InHomePage hp = new InHomePage(getDriver());
             logger.info("Entering login credentials for user: " + username );
             hp.loginInsuranceNow(username, password);
 
 
             // Navigate to Claims Maintenance Page
             logger.info("Navigating to Claims Maintenance page...");
-            InClaimsMaintenancePage cmp = new InClaimsMaintenancePage(driver);
+            InClaimsMaintenancePage cmp = new InClaimsMaintenancePage(getDriver());
             cmp.navigateToNewProviderPage();
             
             // Generate provider number
@@ -87,7 +87,7 @@ public class TC03_AddProviderCodeInformation extends testBaseClass {
             cmp.clickSaveBtn();
 
             // Wait for save confirmation
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Adjust timeout as needed
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(50)); // Adjust timeout as needed
             wait.until(ExpectedConditions.textToBePresentInElement(cmp.getSaveConfirmationElement(), ProviderCode));
 
             // Validate that the correct provider code was saved
