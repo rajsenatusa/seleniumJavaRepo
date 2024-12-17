@@ -26,7 +26,7 @@ import testBase.testBaseClass;
 public class TC03_AddProviderCodeInformation extends testBaseClass {
 	
     final String RESULTS_FOLDER = "DataDrivenResults";
-    final String RESULTS_FILE = RESULTS_FOLDER + "/TestResults.xlsx";
+    final String RESULTS_FILE = RESULTS_FOLDER + "/addProviderCodeResults.xlsx";
 
 
     @Test(dataProvider = "providerData", dataProviderClass = DataProviders.class, groups = {"datadriven"})

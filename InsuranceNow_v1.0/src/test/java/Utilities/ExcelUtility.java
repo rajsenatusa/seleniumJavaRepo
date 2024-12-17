@@ -1,252 +1,257 @@
 package Utilities;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 public class ExcelUtility {
 
-	public FileInputStream fi;
-	public FileOutputStream fo;
-	public XSSFWorkbook workbook;
-	public XSSFSheet sheet;
-	public XSSFRow row;
-	public XSSFCell cell;
-	public CellStyle style;   
-	String path;
+    private static final Logger logger = LoggerFactory.getLogger(ExcelUtility.class);
 
-	
-	public ExcelUtility(String path) {
-        this.path = path;
-        try {
-            FileInputStream fis = new FileInputStream(path);
-            this.workbook = new XSSFWorkbook(fis); // Load existing workbook
+    private final String filePath;
+    private XSSFWorkbook workbook;
+    private XSSFSheet sheet; 
+
+    public ExcelUtility(String filePath) {
+        this.filePath = filePath;							//Open the file
+        this.workbook = loadWorkbook(filePath);				//Load the workbook
+        this.sheet = workbook.getSheetAt(0);  				//// Get the first sheet 
+    }
+
+    /**
+     * Loads an existing workbook or creates a new one if the file does not exist.
+     */
+    private XSSFWorkbook loadWorkbook(String path) {
+        try (FileInputStream fis = new FileInputStream(path)) {
+            return new XSSFWorkbook(fis);
         } catch (FileNotFoundException e) {
-            System.err.println("File not found at path: " + path);
-            // If file does not exist, create a new workbook
-            this.workbook = new XSSFWorkbook(); // Create a new workbook
+            logger.warn("File not found at path: {}. Creating a new workbook.", path);
+            return new XSSFWorkbook();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error loading workbook: " + path, e);
         }
     }
-		
-	
+
+    /**
+     * Saves the current workbook to the specified file path.
+     */
+    private void saveWorkbook() {
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            workbook.write(fos);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving workbook to file: " + filePath, e);
+        }
+    }
+
+    /**
+     * Reads data from the specified sheet into a list of object arrays.
+     */
     public List<Object[]> readData(String sheetName) {
         List<Object[]> data = new ArrayList<>();
-        sheet = workbook.getSheet(sheetName);
+        XSSFSheet sheet = getOrCreateSheet(sheetName);
 
         for (Row row : sheet) {
             int lastCell = row.getLastCellNum();
             Object[] rowData = new Object[lastCell];
             for (int i = 0; i < lastCell; i++) {
-                Cell cell = row.getCell(i);
-                rowData[i] = cell.toString();
+                rowData[i] = getCellValueAsString(row.getCell(i));
             }
             data.add(rowData);
         }
-
         return data;
     }
-    
-    public int getNextEmptyRow(String sheetName) {
-        sheet = workbook.getSheet(sheetName);
-        int lastRowNum = sheet.getLastRowNum();
-        return lastRowNum; // Return the next empty row
+
+    /**
+     * Writes data to a specific cell in a sheet.
+     */
+    public void writeCellData(String sheetName, int rowNum, int colNum, String value) {
+        XSSFSheet sheet = getOrCreateSheet(sheetName);
+        Row row = getOrCreateRow(sheet, rowNum);
+        Cell cell = row.createCell(colNum);
+        cell.setCellValue(value);
+        saveWorkbook();
     }
-    
-    
-    public int getNextEmptyCellInColumn(String sheetName, int columnIndex) {
-        sheet = workbook.getSheet(sheetName);
-        if (sheet == null) {
-            return -1; // Sheet does not exist
+
+    /**
+     * Clears data from a specific cell in a sheet.
+     */
+    public void clearCellData(String sheetName, int rowNum, int colNum) {
+        writeCellData(sheetName, rowNum, colNum, "");
+    }
+
+    /**
+     * Retrieves cell value as a string.
+     */
+    private String getCellValueAsString(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        DataFormatter formatter = new DataFormatter();
+        return formatter.formatCellValue(cell);
+    }
+
+    /**
+     * Retrieves the total rows in a sheet.
+     */
+    public int getRowCount(String sheetName) {
+        return getOrCreateSheet(sheetName).getLastRowNum() + 1;
+    }
+
+    /**
+     * Retrieves the total columns in a specified row of a sheet.
+     */
+    public int getColumnCount(String sheetName, int rowNum) {
+        Row row = getOrCreateSheet(sheetName).getRow(rowNum);
+        return row != null ? row.getLastCellNum() : 0;
+    }
+
+    /**
+     * Highlights a cell with the specified color.
+     */
+    public void fillCellColor(String sheetName, int rowNum, int colNum, IndexedColors color) {
+        XSSFSheet sheet = getOrCreateSheet(sheetName);
+        Row row = getOrCreateRow(sheet, rowNum);
+        Cell cell = row.getCell(colNum);
+
+        if (cell == null) {
+            cell = row.createCell(colNum);
         }
 
-        int lastRowNum = sheet.getLastRowNum();
-        for (int i = 0; i <= lastRowNum; i++) {
+        CellStyle style = workbook.createCellStyle();
+        style.setFillForegroundColor(color.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        cell.setCellStyle(style);
+        saveWorkbook();
+    }
+
+    public void fillGreenColor(String sheetName, int rowNum, int colNum) {
+        fillCellColor(sheetName, rowNum, colNum, IndexedColors.GREEN);
+    }
+
+    public void fillRedColor(String sheetName, int rowNum, int colNum) {
+        fillCellColor(sheetName, rowNum, colNum, IndexedColors.RED);
+    }
+
+    /**
+     * Returns or creates a sheet by name.
+     */
+    private XSSFSheet getOrCreateSheet(String sheetName) {
+        XSSFSheet sheet = workbook.getSheet(sheetName);
+        if (sheet == null) {
+            sheet = workbook.createSheet(sheetName);
+        }
+        return sheet;
+    }
+
+    /**
+     * Returns or creates a row by index in the given sheet.
+     */
+    private Row getOrCreateRow(Sheet sheet, int rowNum) {
+        Row row = sheet.getRow(rowNum);
+        if (row == null) {
+            row = sheet.createRow(rowNum);
+        }
+        return row;
+    }
+
+    /**
+     * Finds the next empty row in the specified sheet.
+     */
+    public int getNextEmptyRow(String sheetName) {
+        XSSFSheet sheet = getOrCreateSheet(sheetName);
+        return sheet.getLastRowNum() + 1;
+    }
+
+    /**
+     * Finds the next empty cell in a specific column of a sheet.
+     */
+    public int getNextEmptyCellInColumn(String sheetName, int columnIndex) {
+        XSSFSheet sheet = getOrCreateSheet(sheetName);
+
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             if (row == null || row.getCell(columnIndex) == null || row.getCell(columnIndex).getCellType() == CellType.BLANK) {
-                return i; // Found an empty cell in the specified column
+                return i;
             }
         }
-        return lastRowNum + 1; // Return the next row if all rows are filled
+        return sheet.getLastRowNum() + 1;
     }
-    
-	public int getRowCount(String sheetName) throws IOException 
-	{
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-		sheet=workbook.getSheet(sheetName);
-		int rowcount=sheet.getLastRowNum();
-		workbook.close();
-		fi.close();
-		return rowcount;		
-	}
-	
-	public int getCellCount(String sheetName,int rownum) throws IOException
-	{
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-		sheet=workbook.getSheet(sheetName);
-		row=sheet.getRow(rownum);
-		int cellcount=row.getLastCellNum();
-		workbook.close();
-		fi.close();
-		return cellcount;
-	}
-	
-	
-	public String getCellData(String sheetName,int rownum,int colnum) throws IOException
-	{
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-		sheet=workbook.getSheet(sheetName);
-		row=sheet.getRow(rownum);
-		cell=row.getCell(colnum);
-		
-		DataFormatter formatter = new DataFormatter();
-		String data;
-		try{
-		data = formatter.formatCellValue(cell); //Returns the formatted value of a cell as a String regardless of the cell type.
-		}
-		catch(Exception e)
-		{
-			data="";
-		}
-		workbook.close();
-		fi.close();
-		return data;
-	}
-	
-	public void setCellData(String sheetName,int rownum,int colnum,String data) throws IOException
-	{
-		File xlfile=new File(path);
-		if(!xlfile.exists())    // If file not exists then create new file
-		{
-		workbook=new XSSFWorkbook();
-		fo=new FileOutputStream(path);
-		workbook.write(fo);
-		}
-				
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-			
-		if(workbook.getSheetIndex(sheetName)==-1) // If sheet not exists then create new Sheet
-			workbook.createSheet(sheetName);
-		sheet=workbook.getSheet(sheetName);
-					
-		if(sheet.getRow(rownum)==null)   // If row not exists then create new Row
-				sheet.createRow(rownum);
-		row=sheet.getRow(rownum);
-		
-		cell=row.createCell(colnum);
-		cell.setCellValue(data);
-		fo=new FileOutputStream(path);
-		workbook.write(fo);		
-		workbook.close();
-		fi.close();
-		fo.close();
-	}
-	
-	
-	public void fillGreenColor(String sheetName,int rownum,int colnum) throws IOException
-	{
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-		sheet=workbook.getSheet(sheetName);
-		
-		row=sheet.getRow(rownum);
-		cell=row.getCell(colnum);
-		
-		style=workbook.createCellStyle();
-		
-		style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
-		style.setFillPattern(FillPatternType.SOLID_FOREGROUND); 
-				
-		cell.setCellStyle(style);
-		workbook.write(fo);
-		workbook.close();
-		fi.close();
-		fo.close();
-	}
-	
-	
-	public void fillRedColor(String sheetName,int rownum,int colnum) throws IOException
-	{
-		fi=new FileInputStream(path);
-		workbook=new XSSFWorkbook(fi);
-		sheet=workbook.getSheet(sheetName);
-		row=sheet.getRow(rownum);
-		cell=row.getCell(colnum);
-		
-		style=workbook.createCellStyle();
-		
-		style.setFillForegroundColor(IndexedColors.RED.getIndex());
-		style.setFillPattern(FillPatternType.SOLID_FOREGROUND);  
-		
-		cell.setCellStyle(style);		
-		workbook.write(fo);
-		workbook.close();
-		fi.close();
-		fo.close();
-	}
-	
-// write methods are goes here.
-    public void writeCellData(String sheetName, int rowNum, int colNum, String value) {
-        try {
-            // Get the sheet
-            sheet = workbook.getSheet(sheetName);
-            if (sheet == null) {
-                sheet = workbook.createSheet(sheetName); // Create the sheet if it does not exist
-            }
 
-            // Get the row
-            Row row = sheet.getRow(rowNum);
-            if (row == null) {
-                row = sheet.createRow(rowNum); // Create the row if it does not exist
-            }
-
-            // Get the cell
-            Cell cell = row.createCell(colNum);
-            cell.setCellValue(value);
-
-            // Write the data to the file
-            try (FileOutputStream fos = new FileOutputStream(path)) {
-                workbook.write(fos);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-
+    /**
+     * Closes the workbook resource.
+     */
     public void close() {
         try {
-            workbook.close();
+            if (workbook != null) {
+                workbook.close();
+            }
+        } catch (IOException e) {
+            logger.error("Error closing workbook", e);
+        }
+    }
+    
+    public String getCellData(String sheetName, int rowNum, int colNum) {
+        try (XSSFWorkbook wb = openWorkbook()) {
+            XSSFSheet sheet = wb.getSheet(sheetName);
+
+            if (sheet == null) {
+                throw new IllegalArgumentException("Sheet '" + sheetName + "' does not exist.");
+            }
+
+            Row row = sheet.getRow(rowNum);
+            if (row == null) {
+                return ""; // Row does not exist, return empty string
+            }
+
+            Cell cell = row.getCell(colNum);
+            if (cell == null) {
+                return ""; // Cell does not exist, return empty string
+            }
+
+            DataFormatter formatter = new DataFormatter();
+            return formatter.formatCellValue(cell); // Converts the cell value to a string
         } catch (IOException e) {
             e.printStackTrace();
+            return "";
         }
     }
 
-	
-	
+
+    private XSSFWorkbook openWorkbook() throws IOException {
+        try (FileInputStream fis = new FileInputStream(filePath)) {
+            return new XSSFWorkbook(fis);
+        }
+    }
+    
+    /**
+     * Returns the row at the specified index in the sheet.
+     * 
+     * @param sheetName The name of the sheet (for this example, we're not using it directly)
+     * @param rowIndex The row index to retrieve (0-based index)
+     * @return The XSSFRow object corresponding to the row at the specified index
+     */
+    public XSSFRow getRow(String sheetName, int rowIndex) {
+        if (sheet == null) {
+            throw new IllegalStateException("Sheet is not loaded.");
+        }
+
+        // Ensure the rowIndex is within bounds
+        if (rowIndex < 0 || rowIndex >= sheet.getPhysicalNumberOfRows()) {
+            return null;  // Return null if the row index is out of bounds
+        }
+
+        // Get the row from the sheet at the specified index
+        XSSFRow row = sheet.getRow(rowIndex);
+        return row;  // Return the row object
+    }
+
+   
+
+
 }
-
-

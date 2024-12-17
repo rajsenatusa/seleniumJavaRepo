@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -21,112 +20,123 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import testBase.testBaseClass;
 
 public class ExtentReportManager implements ITestListener {
-	public ExtentSparkReporter sparkReporter;
-	public ExtentReports extent;
-	public ExtentTest test;
+    
+    private ExtentSparkReporter sparkReporter;
+    private ExtentReports extent;
+    private ExtentTest test;
+    private String reportFilePath;
 
-	String repName;
-	Properties prop;
+    private static final String REPORTS_DIRECTORY = "./reports/";
+    private static final String REPORT_TITLE = "InsuranceNow Automation Report";
+    private static final String REPORT_NAME = "InsuranceNow Functional Testing";
+    private static final Theme REPORT_THEME = Theme.DARK;
 
-	public void onStart(ITestContext testContext) {
-		
-		
-		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());// time stamp
-		repName = "Test-Report-" + timeStamp + ".html";
-		sparkReporter = new ExtentSparkReporter(".\\reports\\" + repName);// specify location of the report
+    @Override
+    public void onStart(ITestContext context) {
+        setupExtentReports(context);
+    }
 
-		sparkReporter.config().setDocumentTitle("InsuranceNow Automation Report"); // Title of report
-		sparkReporter.config().setReportName("InsuranceNow Functional Testing"); // name of the report
-		sparkReporter.config().setTheme(Theme.DARK);
-		
-		extent = new ExtentReports();
-		extent.attachReporter(sparkReporter);
-		extent.setSystemInfo("Application", "InsuranceNow");
-		extent.setSystemInfo("Module", "Admin");
-		extent.setSystemInfo("Sub Module", "Customers");
-		extent.setSystemInfo("User Name", System.getProperty("user.name"));
-		extent.setSystemInfo("Environment",System.getProperty("APP_URL"));
-		
-		String os = testContext.getCurrentXmlTest().getParameter("os");
-		extent.setSystemInfo("Operating System", os);
-		
-		String browser = testContext.getCurrentXmlTest().getParameter("browser");
-		extent.setSystemInfo("Browser", browser);
-		
-		List<String> includedGroups = testContext.getCurrentXmlTest().getIncludedGroups();
-		if(!includedGroups.isEmpty()) {
-		extent.setSystemInfo("Groups", includedGroups.toString());
-		}
-	}
+    private void setupExtentReports(ITestContext context) {
+        reportFilePath = generateReportFilePath();
 
-	public void onTestSuccess(ITestResult result) {
-	
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups()); // to display groups in report
-		test.log(Status.PASS,result.getName()+" got successfully executed");
-		
-	}
+        // Configure ExtentSparkReporter
+        sparkReporter = new ExtentSparkReporter(reportFilePath);
+        configureSparkReporter();
 
-	public void onTestFailure(ITestResult result) {
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups());
-		
-		test.log(Status.FAIL,result.getName()+" got failed");
-		test.log(Status.INFO, result.getThrowable().getMessage());
-		
-		try {
-			String imgPath = new testBaseClass().captureScreen(result.getName());
-			test.addScreenCaptureFromPath(imgPath);
-			
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
+        // Initialize ExtentReports
+        extent = new ExtentReports();
+        extent.attachReporter(sparkReporter);
+        addSystemInformation(context);
+    }
 
-	public void onTestSkipped(ITestResult result) {
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups());
-		test.log(Status.SKIP, result.getName()+" got skipped");
-		test.log(Status.INFO, result.getThrowable().getMessage());
-	}
+    private String generateReportFilePath() {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        return REPORTS_DIRECTORY + "Test-Report-" + timeStamp + ".html";
+    }
 
-	public void onFinish(ITestContext testContext) {
-		
-		extent.flush();
-		
-		String pathOfExtentReport = System.getProperty("user.dir")+"\\reports\\"+repName;
-		File extentReport = new File(pathOfExtentReport);
-		
-		try {
-			Desktop.getDesktop().browse(extentReport.toURI());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    private void configureSparkReporter() {
+        sparkReporter.config().setDocumentTitle(REPORT_TITLE);
+        sparkReporter.config().setReportName(REPORT_NAME);
+        sparkReporter.config().setTheme(REPORT_THEME);
+    }
 
-		
-		/*  try {
-			  URL url = new  URL("file:///"+System.getProperty("user.dir")+"\\reports\\"+repName);
-		  
-		  // Create the email message 
-		  ImageHtmlEmail email = new ImageHtmlEmail();
-		  email.setDataSourceResolver(new DataSourceUrlResolver(url));
-		  email.setHostName("smtp.googlemail.com"); 
-		  email.setSmtpPort(465);
-		  email.setAuthenticator(new DefaultAuthenticator("pavanoltraining@gmail.com","password")); 
-		  email.setSSLOnConnect(true);
-		  email.setFrom("pavanoltraining@gmail.com"); //Sender
-		  email.setSubject("Test Results");
-		  email.setMsg("Please find Attached Report....");
-		  email.addTo("pavankumar.busyqa@gmail.com"); //Receiver 
-		  email.attach(url, "extent report", "please check report..."); 
-		  email.send(); // send the email 
-		  }
-		  catch(Exception e) 
-		  { 
-			  e.printStackTrace(); 
-			  }
-		 */ 
-		 
-	}
+    private void addSystemInformation(ITestContext context) {
+        extent.setSystemInfo("Application", "InsuranceNow");
+        extent.setSystemInfo("Module", "Admin");
+        extent.setSystemInfo("Sub Module", "Customers");
+        extent.setSystemInfo("User Name", System.getProperty("user.name"));
+        extent.setSystemInfo("Environment", System.getProperty("APP_URL"));
 
+        addTestNGParameters(context);
+    }
+
+    private void addTestNGParameters(ITestContext context) {
+        String os = context.getCurrentXmlTest().getParameter("os");
+        if (os != null) extent.setSystemInfo("Operating System", os);
+
+        String browser = context.getCurrentXmlTest().getParameter("browser");
+        if (browser != null) extent.setSystemInfo("Browser", browser);
+
+        List<String> groups = context.getCurrentXmlTest().getIncludedGroups();
+        if (!groups.isEmpty()) extent.setSystemInfo("Groups", String.join(", ", groups));
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        createTest(result, Status.PASS, result.getName() + " executed successfully.");
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        ExtentTest test = createTest(result, Status.FAIL, result.getName() + " failed.");
+        test.log(Status.INFO, result.getThrowable().getMessage());
+        attachScreenshot(result, test);
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        ExtentTest test = createTest(result, Status.SKIP, result.getName() + " was skipped.");
+        if (result.getThrowable() != null) test.log(Status.INFO, result.getThrowable().getMessage());
+    }
+
+    private ExtentTest createTest(ITestResult result, Status status, String message) {
+        test = extent.createTest(result.getName());
+        test.assignCategory(result.getMethod().getGroups());
+        test.log(status, message);
+        return test;
+    }
+
+    private void attachScreenshot(ITestResult result, ExtentTest test) {
+        try {
+            String screenshotPath = new testBaseClass().captureScreen(result.getName());
+            test.addScreenCaptureFromPath(screenshotPath);
+        } catch (IOException e) {
+            test.log(Status.WARNING, "Failed to attach screenshot: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        flushReport();
+        openReportInBrowser();
+    }
+
+    private void flushReport() {
+        if (extent != null) {
+            extent.flush();
+        }
+    }
+
+    private void openReportInBrowser() {
+        try {
+            File reportFile = new File(reportFilePath);
+            if (Desktop.isDesktopSupported() && reportFile.exists()) {
+                Desktop.getDesktop().browse(reportFile.toURI());
+            } else {
+                System.err.println("Report file is not supported on this system or does not exist.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error opening the extent report: " + e.getMessage());
+        }
+    }
 }

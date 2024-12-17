@@ -2,85 +2,72 @@ package Utilities;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 
 public class DataProviders {
 
-	//DataProvider 1
+	private static final Logger logger = LoggerFactory.getLogger(DataProviders.class);
 	
-	@DataProvider(name="providerData")
-	public String [][] getProviderData() throws IOException
-	{
-		String path=".\\testData\\providerData.xlsx";//taking xl file from testData
-		
-		ExcelUtility xlutil=new ExcelUtility(path);//creating an object for XLUtility
-		
-		int totalrows=xlutil.getRowCount("Sheet1");	
-		int totalcols=xlutil.getCellCount("Sheet1",1);
-				
-		String providerdata[][]=new String[totalrows][totalcols];//created for two dimension array which can store the data user and password
-		
-		for(int i=1;i<=totalrows;i++)  //1   //read the data from xl storing in two deminsional array
-		{		
-			for(int j=0;j<totalcols;j++)  //0    i is rows j is col
-			{
-				providerdata[i-1][j]= xlutil.getCellData("Sheet1",i, j);  //1,0
-			}
-		}
-	return providerdata;//returning two dimension array
-				
+	// Data Provider 1
+	@DataProvider(name = "providerData")
+	public Object[][] getProviderData() throws IOException {
+	    return loadExcelData(Config.PROVIDER_DATA_PATH, "Sheet1");
+	}
+
+	//Data Provider 2
+	@DataProvider(name = "loginData")
+	public Object[][] getLoginData() throws IOException {
+		return loadExcelData(Config.LOGIN_DATA_PATH, "Sheet1");
 	}
 	
-	//DataProvider 2
-	
-	@DataProvider(name="loginData")
-	public String [][] getloignData() throws IOException
-	{
-		String path=".\\testData\\loginData.xlsx";//taking xl file from testData
-		
-		ExcelUtility xlutil=new ExcelUtility(path);//creating an object for XLUtility
-		
-		int totalrows=xlutil.getRowCount("Sheet1");	
-		int totalcols=xlutil.getCellCount("Sheet1",1);
-				
-		String logindata[][]=new String[totalrows][totalcols];//created for two dimension array which can store the data user and password
-		
-		for(int i=1;i<=totalrows;i++)  //1   //read the data from xl storing in two deminsional array
-		{		
-			for(int j=0;j<totalcols;j++)  //0    i is rows j is col
-			{
-				logindata[i-1][j]= xlutil.getCellData("Sheet1",i, j);  //1,0
-			}
-		}
-	return logindata;//returning two dimension array
-				
+	//Data Provider 3
+
+	@DataProvider(name = "deactivateUserData")
+	public Object[][] getDeactivateUserData() throws IOException {
+		return loadExcelData(Config.DEACTIVATE_USER_DATA_PATH, "Sheet1");
 	}
-	
-	
-	//DataProvider 3
-	
-	@DataProvider(name="deactivateUserData")
-	public String [][] getDeactivateUserData() throws IOException
-	{
-		String path=".\\testData\\deactivateUserData.xlsx";//taking xl file from testData
-		
-		ExcelUtility xlutil=new ExcelUtility(path);//creating an object for XLUtility
-		
-		int totalrows=xlutil.getRowCount("Sheet1");	
-		int totalcols=xlutil.getCellCount("Sheet1",1);
-				
-		String deactivateuserdata[][]=new String[totalrows][totalcols];//created for two dimension array which can store the data user and password
-		
-		for(int i=1;i<=totalrows;i++)  //1   //read the data from xl storing in two deminsional array
-		{		
-			for(int j=0;j<totalcols;j++)  //0    i is rows j is col
-			{
-				deactivateuserdata[i-1][j]= xlutil.getCellData("Sheet1",i, j);  //1,0
-			}
-		}
-	return deactivateuserdata;//returning two dimension array
-				
+
+	// DataProvider 4
+	@DataProvider(name = "resetPasswordUserData")
+	public Object[][] getResetPasswordUserData() throws IOException {
+		return loadExcelData(Config.RESET_PASSWORD_USER_DATA_PATH, "Sheet1");
 	}
-	
-	//DataProvider 4
+
+	private String[][] loadExcelData(String filePath, String sheetName) throws IOException {
+	    try {
+	        logger.info("Loading data from file: {}", filePath);
+	        ExcelUtility xlutil = new ExcelUtility(filePath);
+
+	        int totalRows = xlutil.getRowCount(sheetName);
+	        int totalCols = xlutil.getColumnCount(sheetName, 1);
+
+	        logger.info("Loaded {} rows and {} columns from sheet: {}", totalRows, totalCols, sheetName);
+
+	        String[][] data = new String[totalRows][totalCols];
+	        for (int i = 1; i <= totalRows; i++) {
+	            // Check if the row is empty
+	            if (xlutil.getRow(sheetName, i) == null) {
+	                continue;  // Skip empty rows
+	            }
+	        	
+	            for (int j = 0; j < totalCols; j++) {
+	                String cellData = xlutil.getCellData(sheetName, i, j);
+	                if (cellData == null || cellData.isEmpty()) {
+	                    // Handle empty cell if needed
+	                }
+	                data[i - 1][j] = cellData;  // Add cell data to the array
+	            }
+	            
+	          
+	        }
+
+	        return data;
+	    } catch (Exception e) {
+	        logger.error("Error while loading data from Excel file: {}", filePath, e);
+	        throw e;
+	    }
+	}
+
 }

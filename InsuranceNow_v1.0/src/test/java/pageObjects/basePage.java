@@ -1,9 +1,16 @@
 package pageObjects;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -11,13 +18,16 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import testBase.testBaseClass;
 
 // This is the parent class for all page object classes.
 public class basePage {
 	
-    protected WebDriver driver;
+	private static final Logger logger = LoggerFactory.getLogger(basePage.class);
+	protected WebDriver driver;
 
     // Constructor to initialize the driver and PageFactory
     public basePage(WebDriver driver) {
@@ -38,7 +48,7 @@ public class basePage {
         WebDriverWait wait = new WebDriverWait(testBaseClass.getDriver(), timeoutInSeconds);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
-
+ 
     // Wait for a specific element to be clickable within the given timeout
     public WebElement waitForElementToBeClickable(By locator, Duration timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(testBaseClass.getDriver(), timeoutInSeconds);
@@ -58,10 +68,11 @@ public class basePage {
     }
 
     // Select a dropdown option by visible text
-    public void selectDropdownByVisibleText(WebElement dropdownElement, String visibleText) {
+    public String selectDropdownByVisibleText(WebElement dropdownElement, String visibleText) {
         try {
             Select dropdown = new Select(dropdownElement);
             dropdown.selectByVisibleText(visibleText);
+            return dropdown.getFirstSelectedOption().getText();
         } catch (Exception e) {
             throw new RuntimeException("Failed to select option by visible text: " + visibleText, e);
         }
@@ -109,11 +120,13 @@ public class basePage {
 
     // Example method to click a WebElement, useful if you have many actions
     public void clickElement(WebElement element) {
-        try {
-            element.click();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to click element: " + element, e);
-        }
+    	 try {
+    	        logger.info("Clicking on element: {}", element);
+    	        element.click();
+    	    } catch (Exception e) {
+    	        logger.error("Failed to click element.", e);
+    	        throw new RuntimeException("Failed to click element: " + element, e);
+    	    }
     }
 
     // Example method to send keys to an element (e.g., input field)
@@ -128,10 +141,66 @@ public class basePage {
 
     // Get text of a WebElement
     public String getText(WebElement element) {
-        try {
-            return element.getText();
+    	try {
+            String text = element.getText();
+            return text != null ? text.trim() : "";
         } catch (Exception e) {
             throw new RuntimeException("Failed to get text from element: " + element, e);
         }
     }
+    
+    public void highlightElement(WebElement element) {
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].style.border='3px solid red'", element);
+        } catch (Exception e) {
+            logger.warn("Failed to highlight element.", e);
+        }
+    }
+    
+    public void scrollToElement(WebElement element) {
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].scrollIntoView(true);", element);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to scroll to element: " + element, e);
+        }
+    }
+    
+    public void waitUntilTableRowCountIsGreaterThan(List<WebElement> rows, int count, Duration timeout) {
+        WebDriverWait wait = new WebDriverWait(driver, timeout);
+        wait.until(driver -> rows.size() > count);
+    }
+
+    public void captureScreenshot(String fileName) {
+        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        try {
+            Files.copy(screenshot.toPath(), Paths.get("screenshots", fileName + ".png"));
+        } catch (IOException e) {
+            logger.error("Failed to save screenshot: {}", fileName, e);
+        }
+    }
+
+    public void waitForPageLoadComplete(Duration timeout) {
+        new WebDriverWait(driver, timeout).until(
+            webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete")
+        );
+    }
+
+    public void retryClickElement(WebElement element, int maxRetries) {
+        int attempts = 0;
+        while (attempts < maxRetries) {
+            try {
+                element.click();
+                return;
+            } catch (Exception e) {
+                attempts++;
+            }
+        }
+        throw new RuntimeException("Failed to click element after " + maxRetries + " attempts.");
+    }
+
+
+
+    
 }
