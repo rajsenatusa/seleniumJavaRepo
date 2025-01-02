@@ -40,8 +40,27 @@ public class basePage {
     public void waitForSearchResultsToLoad(List<WebElement> resultTableRows, int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(testBaseClass.getDriver(), Duration.ofSeconds(timeoutInSeconds));
         wait.until(ExpectedConditions.visibilityOfAllElements(resultTableRows));
-        System.out.println("Search results are now loaded and visible.");
+        System.out.println("Search results are now loaded and visible.");    
     }
+    
+    public boolean checkAndHandleEmptyList(List<WebElement> resultTableRows, int timeoutInSeconds ) {
+    	WebDriverWait wait = new WebDriverWait(testBaseClass.getDriver(), Duration.ofSeconds(timeoutInSeconds));
+        // Wait for the visibility of all elements in resultTableRows
+        wait.until(ExpectedConditions.visibilityOfAllElements(resultTableRows));
+        
+        // Check if any of the rows contain the text "Empty List"
+        for (WebElement row : resultTableRows) {
+            if (row.getText().contains("Empty List")) {
+                System.out.println("Empty List Found, User Needs to be added to the system.");
+                return true; // Indicating "Empty List" is found
+            }
+        }
+        
+        // If "Empty List" is not found
+        System.out.println("Search results are now loaded and visible.");
+        return false; // Indicating "Empty List" is not found
+    }
+
 
     // Wait for a specific element to be visible within the given timeout
     public WebElement waitForElementToBeVisible(By locator, Duration timeoutInSeconds) {
