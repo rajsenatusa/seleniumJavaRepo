@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.List;
 
@@ -34,7 +35,6 @@ public class basePage {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
-
 
     // Wait for search results to load (table rows should be visible)
     public void waitForSearchResultsToLoad(List<WebElement> resultTableRows, int timeoutInSeconds) {
@@ -217,8 +217,55 @@ public class basePage {
         }
         throw new RuntimeException("Failed to click element after " + maxRetries + " attempts.");
     }
+    
+    public static String generatePassword(String username, String previousPassword) {
+        // Define character pools
+        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String specialCharacters = "!@#$%^&*()-_+=<>?/{}[]~";
+        String allCharacters = upperCaseLetters + lowerCaseLetters + digits + specialCharacters;
 
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
 
+        // Ensure at least one character from each category
+        password.append(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+        password.append(lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length())));
+        password.append(digits.charAt(random.nextInt(digits.length())));
+        password.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
+
+        // Fill the rest of the password with random characters up to the desired length
+        int targetLength = random.nextInt(96) + 5; // Random length between 5 and 100
+        while (password.length() < targetLength) {
+            password.append(allCharacters.charAt(random.nextInt(allCharacters.length())));
+        }
+
+        // Shuffle the password for randomness
+        String generatedPassword = shuffleString(password.toString(), random);
+
+        // Validate password against conditions
+        if (generatedPassword.contains(username) || generatedPassword.contains(new StringBuilder(username).reverse().toString())) {
+            return generatePassword(username, previousPassword); // Retry if username or its reverse is found
+        }
+        if (generatedPassword.equals(previousPassword)) {
+            return generatePassword(username, previousPassword); // Retry if password matches previous
+        }
+
+        return generatedPassword;
+    }
+
+    // Helper method to shuffle characters in a string
+    private static String shuffleString(String input, SecureRandom random) {
+        char[] characters = input.toCharArray();
+        for (int i = characters.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = characters[i];
+            characters[i] = characters[j];
+            characters[j] = temp;
+        }
+        return new String(characters);
+    }
 
     
 }

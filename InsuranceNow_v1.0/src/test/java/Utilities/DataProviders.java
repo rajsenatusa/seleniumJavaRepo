@@ -1,6 +1,8 @@
 package Utilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,25 +47,28 @@ public class DataProviders {
 
 	        logger.info("Loaded {} rows and {} columns from sheet: {}", totalRows, totalCols, sheetName);
 
-	        String[][] data = new String[totalRows][totalCols];
-	        for (int i = 1; i <= totalRows; i++) {
-	            // Check if the row is empty
-	            if (xlutil.getRow(sheetName, i) == null) {
-	                continue;  // Skip empty rows
-	            }
-	        	
+	        // Create a dynamic list to hold valid rows
+	        List<String[]> validRows = new ArrayList<>();
+
+	        for (int i = 1; i <= totalRows; i++) { // Start from 1 to skip header
+	            boolean isRowEmpty = true;
+	            String[] rowData = new String[totalCols];
+
 	            for (int j = 0; j < totalCols; j++) {
 	                String cellData = xlutil.getCellData(sheetName, i, j);
-	                if (cellData == null || cellData.isEmpty()) {
-	                    // Handle empty cell if needed
+	                if (cellData != null && !cellData.trim().isEmpty()) {
+	                    isRowEmpty = false; // Row has data
 	                }
-	                data[i - 1][j] = cellData;  // Add cell data to the array
+	                rowData[j] = (cellData != null) ? cellData.trim() : ""; // Store trimmed or empty string
 	            }
-	            
-	          
+
+	            if (!isRowEmpty) {
+	                validRows.add(rowData); // Add only non-empty rows
+	            }
 	        }
 
-	        return data;
+	        // Convert the list to a 2D array
+	        return validRows.toArray(new String[0][]);
 	    } catch (Exception e) {
 	        logger.error("Error while loading data from Excel file: {}", filePath, e);
 	        throw e;

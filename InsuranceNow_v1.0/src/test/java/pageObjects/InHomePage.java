@@ -39,12 +39,10 @@ public class InHomePage extends basePage {
 	
 	public void loginInsuranceNow(String username, String password) {
 		// This action method login's to insurance now.
-		txtUsername.click();
-		txtUsername.clear();
-		txtUsername.sendKeys(username);
-		txtPassword.clear();
-		txtPassword.sendKeys(password);
-		btnSignIn.click();
+		sendKeysToElement(txtUsername, username);
+		sendKeysToElement(txtPassword,password);
+		clickElement(btnSignIn);
+
 	}
 	
 	// In this section, write methods used for test validations 
