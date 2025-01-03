@@ -25,7 +25,7 @@
       <span class="top-banner-title-font">Test results</span>
       <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
       <br/>
-      <span class="top-banner-font-1">1 suite, 1 failed test</span>
+      <span class="top-banner-font-1">1 suite, 2 failed tests</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -92,7 +92,7 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">3 methods, 1 failed,   2 passed</span>
+                    <span class="method-stats">3 methods, 2 failed,   1 passed</span>
                   </li>
                   <li>
                     <span class="method-list-title failed">Failed methods</span>
@@ -103,7 +103,12 @@
                     <div class="method-list-content failed suite-Suite">
                       <span>
                         <img src="failed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword2" class="method navigator-link" hash-for-method="verifyPasswordReset(null, null, null, null, null, null, null)">verifyPasswordReset(null, null, null, null, null, null, null)</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword" class="method navigator-link" hash-for-method="verifyPasswordReset(, , , , , , )">verifyPasswordReset(, , , , , , )</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword" class="method navigator-link" hash-for-method="verifyPasswordReset(null, null, null, null, null, null, null)">verifyPasswordReset(null, null, null, null, null, null, null)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content failed suite-Suite -->
@@ -117,12 +122,7 @@
                     <div class="method-list-content passed suite-Suite">
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword2" class="method navigator-link" hash-for-method="verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Jan@2025!)">verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Jan@2025!)</a> <!-- method navigator-link -->
-                      </span>
-                      <br/>
-                      <span>
-                        <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword2" class="method navigator-link" hash-for-method="verifyPasswordReset(gallopadmin, Jan@2025!, Sami, Cemek, acemek@aiiflorida.com, acemek, Jan@2025!)">verifyPasswordReset(gallopadmin, Jan@2025!, Sami, Cemek, acemek@aiiflorida.com, acemek, Jan@2025!)</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="testCases.TC05_ResetPassword" class="method navigator-link" hash-for-method="verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Feb@2025!)">verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Feb@2025!)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content passed suite-Suite -->
@@ -140,9 +140,23 @@
           <div class="suite-Suite-class-failed">
             <div class="main-panel-header rounded-window-top">
               <img src="failed.png"/>
-              <span class="class-name">testCases.TC05_ResetPassword2</span>
+              <span class="class-name">testCases.TC05_ResetPassword</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="verifyPasswordReset(, , , , , , )">
+                  </a> <!-- verifyPasswordReset(, , , , , , ) -->
+                  <span class="method-name">verifyPasswordReset</span>
+                  <span class="parameters">(,,,,,,)</span>
+                  <div class="stack-trace">java.lang.AssertionError: Invalid input data: One or more required fields are missing.
+	at testCases.TC05_ResetPassword.validateInputData(TC05_ResetPassword.java:69)
+	at testCases.TC05_ResetPassword.verifyPasswordReset(TC05_ResetPassword.java:31)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+... Removed 26 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
                   <a name="verifyPasswordReset(null, null, null, null, null, null, null)">
@@ -150,8 +164,8 @@
                   <span class="method-name">verifyPasswordReset</span>
                   <span class="parameters">(null,null,null,null,null,null,null)</span>
                   <div class="stack-trace">java.lang.AssertionError: Invalid input data: One or more required fields are missing.
-	at testCases.TC05_ResetPassword2.validateInputData(TC05_ResetPassword2.java:68)
-	at testCases.TC05_ResetPassword2.verifyPasswordReset(TC05_ResetPassword2.java:31)
+	at testCases.TC05_ResetPassword.validateInputData(TC05_ResetPassword.java:69)
+	at testCases.TC05_ResetPassword.verifyPasswordReset(TC05_ResetPassword.java:31)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 ... Removed 26 stack frames
 </div> <!-- stack-trace -->
@@ -162,23 +176,15 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">testCases.TC05_ResetPassword2</span>
+              <span class="class-name">testCases.TC05_ResetPassword</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Jan@2025!)">
-                  </a> <!-- verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Jan@2025!) -->
+                  <a name="verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Feb@2025!)">
+                  </a> <!-- verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Feb@2025!) -->
                   <span class="method-name">verifyPasswordReset</span>
-                  <span class="parameters">(gallopadmin,Jan@2025!,Zachary ,Smith,zsmith@aiiflorida.com,zsmith,Jan@2025!)</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="verifyPasswordReset(gallopadmin, Jan@2025!, Sami, Cemek, acemek@aiiflorida.com, acemek, Jan@2025!)">
-                  </a> <!-- verifyPasswordReset(gallopadmin, Jan@2025!, Sami, Cemek, acemek@aiiflorida.com, acemek, Jan@2025!) -->
-                  <span class="method-name">verifyPasswordReset</span>
-                  <span class="parameters">(gallopadmin,Jan@2025!,Sami,Cemek,acemek@aiiflorida.com,acemek,Jan@2025!)</span>
+                  <span class="parameters">(gallopadmin,Jan@2025!,Zachary ,Smith,zsmith@aiiflorida.com,zsmith,Feb@2025!)</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -200,7 +206,7 @@
     &lt;parameter name=&quot;os&quot; value=&quot;Windows&quot;/&gt;
     &lt;parameter name=&quot;browser&quot; value=&quot;chrome&quot;/&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;testCases.TC05_ResetPassword2&quot;/&gt;
+      &lt;class name=&quot;testCases.TC05_ResetPassword&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Test --&gt;
 &lt;/suite&gt; &lt;!-- Suite --&gt;
@@ -251,21 +257,21 @@ data.addColumn('number', 'Time (ms)');
 data.addRows(3);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'verifyPasswordReset')
-data.setCell(0, 2, 'testCases.TC05_ResetPassword2')
-data.setCell(0, 3, 277415);
+data.setCell(0, 2, 'testCases.TC05_ResetPassword')
+data.setCell(0, 3, 15278);
 data.setCell(1, 0, 1)
 data.setCell(1, 1, 'verifyPasswordReset')
-data.setCell(1, 2, 'testCases.TC05_ResetPassword2')
-data.setCell(1, 3, 125488);
+data.setCell(1, 2, 'testCases.TC05_ResetPassword')
+data.setCell(1, 3, 6);
 data.setCell(2, 0, 2)
 data.setCell(2, 1, 'verifyPasswordReset')
-data.setCell(2, 2, 'testCases.TC05_ResetPassword2')
-data.setCell(2, 3, 13932);
+data.setCell(2, 2, 'testCases.TC05_ResetPassword')
+data.setCell(2, 3, 1);
 window.suiteTableData['Suite']= { tableData: data, tableDiv: 'times-div-Suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 6 minutes</span>
+              <span class="suite-total-time">Total running time: 15 seconds</span>
               <div id="times-div-Suite">
               </div> <!-- times-div-Suite -->
             </div> <!-- times-div -->
@@ -291,28 +297,30 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">testCases.TC05_ResetPassword2</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">testCases.TC05_ResetPassword</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">setup(Windows, chrome)</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
-                <span class="method-name">verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Jan@2025!)</span>
-                <span class="method-start">2977 ms</span>
+                <span class="method-name">verifyPasswordReset(gallopadmin, Jan@2025!, Zachary , Smith, zsmith@aiiflorida.com, zsmith, Feb@2025!)</span>
+                <span class="method-start">4419 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
-                <span class="method-name">verifyPasswordReset(gallopadmin, Jan@2025!, Sami, Cemek, acemek@aiiflorida.com, acemek, Jan@2025!)</span>
-                <span class="method-start">293530 ms</span>
+                <img src="failed.png">
+                </img>
+                <span class="method-name">verifyPasswordReset(, , , , , , )</span>
+                <span class="method-start">19709 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
                 <img src="failed.png">
                 </img>
                 <span class="method-name">verifyPasswordReset(null, null, null, null, null, null, null)</span>
-                <span class="method-start">430595 ms</span>
+                <span class="method-start">19874 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">teardown</span>
-                <span class="method-start">453087 ms</span>
+                <span class="method-start">20031 ms</span>
               </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

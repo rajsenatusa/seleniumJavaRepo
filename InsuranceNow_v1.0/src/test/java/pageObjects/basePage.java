@@ -57,7 +57,6 @@ public class basePage {
         }
         
         // If "Empty List" is not found
-        System.out.println("Search results are now loaded and visible.");
         return false; // Indicating "Empty List" is not found
     }
 
