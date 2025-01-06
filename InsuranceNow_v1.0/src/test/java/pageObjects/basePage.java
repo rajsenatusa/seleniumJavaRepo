@@ -266,6 +266,17 @@ public class basePage {
         }
         return new String(characters);
     }
+    
+    public void Wait(int seconds) {
+        try {
+            // Convert seconds to milliseconds and pause execution
+            Thread.sleep(seconds * 1000);
+            System.out.println("Waited for " + seconds + " seconds.");
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted during wait: " + e.getMessage());
+            Thread.currentThread().interrupt(); // Preserve the interrupted status
+        }
+    }
 
     
 }

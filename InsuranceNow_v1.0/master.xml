@@ -20,10 +20,8 @@
       <!--	<class name="testCases.TC03_AddProviderCodeInformation"/> 	-->
   	  <!--	<class name="testCases.TC04_RemoveUserTest"/>			    -->
   	  <class name="testCases.TC05_ResetPassword"/>	
-       
     </classes>
-    
-    
+        
   </test> <!-- Test -->
   
 </suite> <!-- Suite -->
